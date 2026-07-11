@@ -1,0 +1,1987 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>鐵日誌 IRONLOG</title>
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F3F4F7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0C0F14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="鐵日誌">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="manifest" href="manifest.webmanifest">
+</head>
+<body><style>
+  :root {
+    --bg: #F3F4F7;
+    --surface: #FFFFFF;
+    --surface2: #ECEEF3;
+    --ink: #171B23;
+    --muted: #626B78;
+    --faint: #8B93A1;
+    --line: #E2E5EB;
+    --accent: #2952E3;
+    --accent-soft: rgba(41, 82, 227, .10);
+    --accent-ink: #FFFFFF;
+    --chart: #2952E3;
+    --chart-dim: #B9C4DC;
+    --good: #1F9D55;
+    --good-soft: rgba(31, 157, 85, .12);
+    --warn: #B97A1D;
+    --warn-soft: rgba(232, 161, 58, .18);
+    --bad: #C94747;
+    --bad-soft: rgba(201, 71, 71, .10);
+    --shadow: 0 1px 2px rgba(20, 24, 31, .05), 0 6px 20px rgba(20, 24, 31, .06);
+    --tabbar-bg: rgba(255, 255, 255, .86);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0C0F14;
+      --surface: #151A22;
+      --surface2: #1D242F;
+      --ink: #EDF0F4;
+      --muted: #97A0AE;
+      --faint: #67707F;
+      --line: #232B37;
+      --accent: #6C8CFF;
+      --accent-soft: rgba(108, 140, 255, .16);
+      --accent-ink: #0B0E14;
+      --chart: #5F82FF;
+      --chart-dim: #333E55;
+      --good: #3DBA76;
+      --good-soft: rgba(61, 186, 118, .16);
+      --warn: #E8B04B;
+      --warn-soft: rgba(232, 176, 75, .16);
+      --bad: #E06C6C;
+      --bad-soft: rgba(224, 108, 108, .14);
+      --shadow: none;
+      --tabbar-bg: rgba(18, 22, 29, .88);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F3F4F7;
+    --surface: #FFFFFF;
+    --surface2: #ECEEF3;
+    --ink: #171B23;
+    --muted: #626B78;
+    --faint: #8B93A1;
+    --line: #E2E5EB;
+    --accent: #2952E3;
+    --accent-soft: rgba(41, 82, 227, .10);
+    --accent-ink: #FFFFFF;
+    --chart: #2952E3;
+    --chart-dim: #B9C4DC;
+    --good: #1F9D55;
+    --good-soft: rgba(31, 157, 85, .12);
+    --warn: #B97A1D;
+    --warn-soft: rgba(232, 161, 58, .18);
+    --bad: #C94747;
+    --bad-soft: rgba(201, 71, 71, .10);
+    --shadow: 0 1px 2px rgba(20, 24, 31, .05), 0 6px 20px rgba(20, 24, 31, .06);
+    --tabbar-bg: rgba(255, 255, 255, .86);
+  }
+  :root[data-theme="dark"] {
+    --bg: #0C0F14;
+    --surface: #151A22;
+    --surface2: #1D242F;
+    --ink: #EDF0F4;
+    --muted: #97A0AE;
+    --faint: #67707F;
+    --line: #232B37;
+    --accent: #6C8CFF;
+    --accent-soft: rgba(108, 140, 255, .16);
+    --accent-ink: #0B0E14;
+    --chart: #5F82FF;
+    --chart-dim: #333E55;
+    --good: #3DBA76;
+    --good-soft: rgba(61, 186, 118, .16);
+    --warn: #E8B04B;
+    --warn-soft: rgba(232, 176, 75, .16);
+    --bad: #E06C6C;
+    --bad-soft: rgba(224, 108, 108, .14);
+    --shadow: none;
+    --tabbar-bg: rgba(18, 22, 29, .88);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
+      "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  .app { max-width: 520px; margin: 0 auto; padding: 0 16px calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .app.has-mini { padding-bottom: calc(148px + env(safe-area-inset-bottom, 0px)); }
+
+  /* ── top bar ─────────────────────────── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 2px 6px;
+  }
+  .wordmark { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .18em; color: var(--ink); }
+  .wordmark .plate { width: 10px; height: 10px; border-radius: 3px; background: var(--accent); display: inline-block; }
+  .wordmark .zh { color: var(--faint); letter-spacing: .3em; font-weight: 600; }
+
+  /* ── type ─────────────────────────── */
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--faint); text-transform: uppercase; }
+  .h1 { font-size: 26px; font-weight: 800; letter-spacing: -.01em; margin: 2px 0 0; text-wrap: balance; }
+  .sub { font-size: 14px; color: var(--muted); }
+  .num { font-variant-numeric: tabular-nums; }
+  .section { margin-top: 26px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; padding: 0 2px; }
+  .section-head .eyebrow { display: block; }
+  .section-head h2 { font-size: 17px; font-weight: 800; margin: 2px 0 0; }
+
+  /* ── cards & lists ─────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+  }
+  .card + .card { margin-top: 10px; }
+  .list-item {
+    display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 13px 14px; box-shadow: var(--shadow);
+  }
+  .list-item + .list-item { margin-top: 8px; }
+  .list-item .grow { flex: 1; min-width: 0; }
+  .list-item .title { font-weight: 700; font-size: 15px; }
+  .list-item .meta { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .chev { color: var(--faint); flex: none; }
+
+  .gdot { width: 8px; height: 8px; border-radius: 50%; flex: none; display: inline-block; }
+
+  /* ── buttons ─────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; padding: 0 18px; border-radius: 13px;
+    font-size: 16px; font-weight: 700;
+    background: var(--accent); color: var(--accent-ink);
+    transition: transform .06s ease, opacity .15s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.block { width: 100%; }
+  .btn.ghost { background: var(--surface2); color: var(--ink); }
+  .btn.soft { background: var(--accent-soft); color: var(--accent); }
+  .btn.danger { background: var(--bad-soft); color: var(--bad); }
+  .btn.small { min-height: 38px; padding: 0 13px; font-size: 14px; border-radius: 11px; }
+  .btn.tiny { min-height: 32px; padding: 0 10px; font-size: 13px; border-radius: 9px; }
+  .iconbtn { width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: var(--faint); flex: none; }
+  .iconbtn:active { background: var(--surface2); }
+  .confirming { width: auto !important; min-width: 0; padding: 0 10px !important; color: var(--bad) !important; background: var(--bad-soft) !important; font-size: 13px; font-weight: 800; white-space: nowrap; }
+  #ringArc { transition: stroke-dashoffset .2s linear; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 700;
+    background: var(--surface2); color: var(--muted); white-space: nowrap;
+  }
+  .chip.accent { background: var(--accent-soft); color: var(--accent); }
+  .chip.good { background: var(--good-soft); color: var(--good); }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); }
+
+  /* ── inputs ─────────────────────────── */
+  .input {
+    width: 100%; min-height: 48px; padding: 10px 14px;
+    background: var(--surface2); border: 1px solid transparent; border-radius: 12px;
+    font-size: 16px; font-weight: 600;
+  }
+  .input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+  .select {
+    width: 100%; min-height: 46px; padding: 8px 12px;
+    background: var(--surface2); border: 1px solid transparent; border-radius: 12px;
+    font-size: 15px; font-weight: 600; appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--faint) 50%), linear-gradient(135deg, var(--faint) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%;
+    background-size: 5px 5px; background-repeat: no-repeat;
+  }
+
+  /* ── stat tiles ─────────────────────────── */
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 12px 11px; box-shadow: var(--shadow); min-width: 0; }
+  .tile .t-label { font-size: 11.5px; font-weight: 600; color: var(--muted); }
+  .tile .t-value { font-size: 21px; font-weight: 800; margin-top: 3px; letter-spacing: -.01em; white-space: nowrap; }
+  .tile .t-value small { font-size: 12px; font-weight: 700; color: var(--faint); margin-left: 2px; }
+  .tile .t-delta { font-size: 11.5px; font-weight: 700; margin-top: 2px; }
+  .tile .t-delta.down { color: var(--good); }
+  .tile .t-delta.up { color: var(--warn); }
+  .tile .t-delta.flat { color: var(--faint); }
+
+  /* ── session / set rows ─────────────────────────── */
+  .ex-card { padding: 14px 14px 12px; }
+  .ex-head { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+  .ex-head .name { font-size: 16px; font-weight: 800; flex: 1; min-width: 0; }
+  .setrow {
+    display: grid; grid-template-columns: 42px 1fr 18px 1fr 34px; gap: 7px; align-items: center;
+    margin-top: 7px;
+  }
+  .setrow .x { text-align: center; color: var(--faint); font-weight: 700; }
+  .setrow input {
+    width: 100%; min-height: 46px; text-align: center;
+    background: var(--surface2); border: 1px solid transparent; border-radius: 11px;
+    font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; padding: 4px 6px;
+  }
+  .setrow input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+  .setrow.done input { color: var(--faint); background: transparent; border-color: var(--line); }
+  .check {
+    width: 42px; height: 46px; border-radius: 11px; display: flex; align-items: center; justify-content: center;
+    background: var(--surface2); color: var(--faint);
+  }
+  .setrow.done .check { background: var(--good-soft); color: var(--good); }
+  .rm { width: 34px; height: 46px; display: flex; align-items: center; justify-content: center; color: var(--faint); border-radius: 10px; }
+  .ex-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .prchip { font-size: 10.5px; font-weight: 800; letter-spacing: .06em; background: var(--warn-soft); color: var(--warn); border-radius: 6px; padding: 2px 6px; }
+
+  .cardio-row { display: grid; grid-template-columns: 42px 1fr 1fr 1fr; gap: 7px; align-items: center; margin-top: 7px; }
+  .cardio-row .unitwrap { position: relative; min-width: 0; }
+  .cardio-row input {
+    width: 100%; min-width: 0; min-height: 46px; text-align: center;
+    background: var(--surface2); border: 1px solid transparent; border-radius: 11px;
+    font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; padding: 4px 26px 4px 6px;
+  }
+  .cardio-row input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+  .cardio-row .unit { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--faint); font-weight: 700; pointer-events: none; }
+  .exkcal { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; flex: none; }
+
+  .sess-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .sess-bar .big { font-size: 25px; font-weight: 800; letter-spacing: -.01em; }
+  .sess-bar .lbl { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: -1px; white-space: nowrap; }
+
+  /* ── hero cta ─────────────────────────── */
+  .hero { padding: 20px 18px; }
+  .hero .plan-line { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+
+  /* ── plan grid ─────────────────────────── */
+  .weekrow { display: grid; grid-template-columns: 52px 1fr; gap: 10px; align-items: center; padding: 7px 0; }
+  .weekrow .d { font-weight: 800; font-size: 14px; color: var(--muted); }
+  .weekrow.today .d { color: var(--accent); }
+  .weekrow.today .d::after { content: "・今天"; font-size: 11px; font-weight: 700; }
+
+  /* ── timer ─────────────────────────── */
+  .seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface2); border-radius: 13px; padding: 4px; gap: 4px; }
+  .seg button { min-height: 42px; border-radius: 10px; font-weight: 700; font-size: 14.5px; color: var(--muted); }
+  .seg button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+  .ring-wrap { position: relative; width: min(78vw, 300px); margin: 22px auto 8px; }
+  .ring-wrap svg { display: block; width: 100%; height: auto; }
+  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .ring-digits { font-size: clamp(56px, 17vw, 72px); font-weight: 200; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+  .ring-sub { font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: .08em; }
+  .preset-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 14px 0 4px; }
+  .preset-row .chip { min-height: 36px; padding: 0 14px; font-size: 14px; }
+  .preset-row .chip.on { background: var(--accent-soft); color: var(--accent); }
+  .timer-ctl { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; margin-top: 16px; align-items: center; }
+  .hiit-cfg { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .hiit-cfg label { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); margin-bottom: 5px; text-align: center; }
+  .hiit-cfg input {
+    width: 100%; min-height: 46px; text-align: center;
+    background: var(--surface2); border: 1px solid transparent; border-radius: 11px;
+    font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums;
+  }
+  .hiit-cfg input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+
+  .mini-timer {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+    width: min(calc(100% - 32px), 488px);
+    background: var(--ink); color: var(--bg);
+    border-radius: 14px; padding: 10px 10px 10px 16px;
+    display: none; align-items: center; gap: 12px; z-index: 40;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  }
+  .mini-timer.show { display: flex; }
+  .mini-timer .mt-digits { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .mini-timer .mt-label { font-size: 12px; opacity: .7; font-weight: 600; }
+  .mini-timer .grow { flex: 1; }
+  .mini-timer button { color: inherit; font-weight: 700; font-size: 13.5px; padding: 8px 12px; border-radius: 9px; background: rgba(128,128,128,.22); }
+
+  /* ── tab bar ─────────────────────────── */
+  .tabbar {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 0; width: min(100%, 520px); z-index: 50;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    padding: 8px 10px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--tabbar-bg);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+    border-top: 1px solid var(--line);
+  }
+  .tab { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 0 4px; border-radius: 12px; color: var(--faint); }
+  .tab .tlabel { font-size: 11px; font-weight: 700; }
+  .tab.on { color: var(--accent); }
+
+  /* ── sheet ─────────────────────────── */
+  .overlay { position: fixed; inset: 0; background: rgba(10, 13, 18, .45); z-index: 90; opacity: 0; transition: opacity .22s ease; }
+  .overlay.show { opacity: 1; }
+  .sheet {
+    position: fixed; left: 50%; transform: translate(-50%, 105%);
+    bottom: 0; width: min(100%, 520px); max-height: 88vh; max-height: 88dvh; z-index: 95;
+    background: var(--surface); border-radius: 20px 20px 0 0;
+    display: flex; flex-direction: column;
+    transition: transform .28s cubic-bezier(.32, .72, .25, 1);
+    border: 1px solid var(--line); border-bottom: 0;
+  }
+  .sheet.show { transform: translate(-50%, 0); }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 10px; flex: none; }
+  .sheet-head h3 { margin: 0; font-size: 18px; font-weight: 800; }
+  .sheet-body { overflow-y: auto; padding: 2px 18px calc(24px + env(safe-area-inset-bottom, 0px)); -webkit-overflow-scrolling: touch; }
+  .grabber { width: 40px; height: 4px; border-radius: 2px; background: var(--line); margin: 10px auto 0; flex: none; }
+
+  /* ── picker ─────────────────────────── */
+  .search { position: sticky; top: 0; background: var(--surface); padding: 4px 0 10px; z-index: 2; }
+  .groupchips { display: flex; gap: 7px; overflow-x: auto; padding: 2px 2px 12px; scrollbar-width: none; }
+  .groupchips::-webkit-scrollbar { display: none; }
+  .groupchips .chip { flex: none; min-height: 34px; }
+  .groupchips .chip.on { background: var(--ink); color: var(--surface); }
+  .pick-item { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 12px 6px; border-bottom: 1px solid var(--line); }
+  .pick-item:last-child { border-bottom: 0; }
+  .pick-item .pname { font-weight: 700; font-size: 15px; flex: 1; min-width: 0; }
+  .pick-item .plast { font-size: 12px; color: var(--faint); }
+  .pick-item .padd { width: 32px; height: 32px; border-radius: 9px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; flex: none; }
+  .pick-item.added .padd { background: var(--good-soft); color: var(--good); }
+
+  /* ── charts ─────────────────────────── */
+  .chart { position: relative; margin-top: 4px; }
+  .chart svg { display: block; width: 100%; height: auto; }
+  .tip {
+    position: absolute; pointer-events: none; z-index: 5;
+    background: var(--ink); color: var(--bg);
+    border-radius: 9px; padding: 6px 10px; font-size: 12.5px; font-weight: 700;
+    transform: translate(-50%, -118%); white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+    display: none;
+  }
+  .tip small { display: block; font-weight: 600; opacity: .65; font-size: 11px; }
+  .axis-t { font-size: 10.5px; fill: var(--faint); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .grid-l { stroke: var(--line); stroke-width: 1; }
+
+  .empty { text-align: center; padding: 30px 16px; color: var(--muted); font-size: 14px; }
+  .empty .big { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+
+  .wlist-row { display: flex; align-items: center; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .wlist-row:last-child { border-bottom: 0; }
+  .wlist-row .d { color: var(--muted); flex: 1; }
+  .wlist-row .v { font-weight: 800; }
+
+  /* ── toast ─────────────────────────── */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%) translateY(-8px);
+    top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 120;
+    background: var(--ink); color: var(--bg);
+    padding: 11px 18px; border-radius: 12px; font-size: 14.5px; font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0,0,0,.22);
+    opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease;
+    max-width: min(88vw, 480px); text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  textarea.io {
+    width: 100%; min-height: 150px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--surface2); padding: 12px; font-size: 12px; font-family: ui-monospace, Consolas, monospace;
+    color: var(--ink); resize: vertical;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="app" id="app">
+  <header class="topbar">
+    <span class="wordmark"><span class="plate"></span>IRONLOG <span class="zh">鐵日誌</span></span>
+    <span class="sub num" id="topDate"></span>
+  </header>
+  <main id="view"></main>
+</div>
+
+<div class="mini-timer" id="miniTimer" role="status"></div>
+
+<nav class="tabbar" id="tabbar" aria-label="主選單">
+  <button class="tab on" data-tab="today" aria-label="今天">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+      <line x1="8.6" y1="12" x2="15.4" y2="12"></line>
+      <rect x="5.4" y="6.8" width="3.2" height="10.4" rx="1.1"></rect>
+      <rect x="15.4" y="6.8" width="3.2" height="10.4" rx="1.1"></rect>
+      <line x1="2.6" y1="9.4" x2="2.6" y2="14.6"></line>
+      <line x1="21.4" y1="9.4" x2="21.4" y2="14.6"></line>
+    </svg>
+    <span class="tlabel">今天</span>
+  </button>
+  <button class="tab" data-tab="plan" aria-label="課表">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect>
+      <line x1="3.5" y1="9.8" x2="20.5" y2="9.8"></line>
+      <line x1="8" y1="3" x2="8" y2="6.2"></line>
+      <line x1="16" y1="3" x2="16" y2="6.2"></line>
+      <line x1="7.6" y1="13.6" x2="10.4" y2="13.6"></line>
+      <line x1="13.6" y1="13.6" x2="16.4" y2="13.6"></line>
+      <line x1="7.6" y1="16.9" x2="10.4" y2="16.9"></line>
+    </svg>
+    <span class="tlabel">課表</span>
+  </button>
+  <button class="tab" data-tab="timer" aria-label="計時">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+      <circle cx="12" cy="13.4" r="7.4"></circle>
+      <line x1="12" y1="5.8" x2="12" y2="3.2"></line>
+      <line x1="9.8" y1="3.2" x2="14.2" y2="3.2"></line>
+      <line x1="12" y1="13.4" x2="15.2" y2="10.6"></line>
+    </svg>
+    <span class="tlabel">計時</span>
+  </button>
+  <button class="tab" data-tab="progress" aria-label="進度">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="4 17.5 9.2 11.6 13.2 14.6 20 6.5"></polyline>
+      <polyline points="15.5 6.5 20 6.5 20 11"></polyline>
+    </svg>
+    <span class="tlabel">進度</span>
+  </button>
+</nav>
+
+<div class="overlay" id="overlay" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ───────────────────────── data ───────────────────────── */
+
+  var LS_KEY = 'ironlog.v1';
+  var LS_TIMER = 'ironlog.timer.v1';
+
+  var GROUPS = [
+    { id: 'chest', name: '胸', dot: '#D64545' },
+    { id: 'back', name: '背', dot: '#2E6FD8' },
+    { id: 'legs', name: '腿', dot: '#D9A521' },
+    { id: 'shoulders', name: '肩', dot: '#2F9E62' },
+    { id: 'arms', name: '手臂', dot: '#A05FD0' },
+    { id: 'core', name: '核心', dot: '#8B93A1' },
+    { id: 'cardio', name: '有氧', dot: '#25A8B8' }
+  ];
+
+  /* [id, name, group, MET] — MET 用於卡路里估算（Compendium 近似值） */
+  var PRESETS = [
+    ['p_bench', '槓鈴臥推', 'chest', 6.0], ['p_dbbench', '啞鈴臥推', 'chest', 6.0], ['p_incline', '上斜臥推', 'chest', 6.0],
+    ['p_fly', '蝴蝶機夾胸', 'chest', 4.5], ['p_dip', '雙槓撐體', 'chest', 6.0], ['p_pushup', '伏地挺身', 'chest', 4.5],
+    ['p_pullup', '引體向上', 'back', 6.0], ['p_latpull', '滑輪下拉', 'back', 6.0], ['p_bbrow', '槓鈴划船', 'back', 6.0],
+    ['p_dbrow', '啞鈴划船', 'back', 6.0], ['p_seatrow', '坐姿划船', 'back', 6.0], ['p_deadlift', '硬舉', 'back', 6.0],
+    ['p_squat', '深蹲', 'legs', 6.0], ['p_legpress', '腿推機', 'legs', 6.0], ['p_lunge', '弓步蹲', 'legs', 6.0],
+    ['p_rdl', '羅馬尼亞硬舉', 'legs', 6.0], ['p_legext', '腿伸屈', 'legs', 4.5], ['p_legcurl', '腿彎舉', 'legs', 4.5], ['p_calf', '小腿提踵', 'legs', 4.5],
+    ['p_ohp', '肩上推舉', 'shoulders', 6.0], ['p_latraise', '啞鈴側平舉', 'shoulders', 4.5], ['p_facepull', '面拉', 'shoulders', 4.5],
+    ['p_frontraise', '前平舉', 'shoulders', 4.5], ['p_reversefly', '反向飛鳥', 'shoulders', 4.5],
+    ['p_curl', '二頭彎舉', 'arms', 4.5], ['p_hammer', '錘式彎舉', 'arms', 4.5], ['p_pushdown', '三頭下壓', 'arms', 4.5],
+    ['p_ohext', '過頭三頭伸展', 'arms', 4.5], ['p_closegrip', '窄握臥推', 'arms', 6.0],
+    ['p_plank', '平板支撐', 'core', 3.8], ['p_crunch', '捲腹', 'core', 3.8], ['p_legraise', '懸垂舉腿', 'core', 3.8], ['p_russian', '俄羅斯轉體', 'core', 3.8],
+    ['p_run', '跑步', 'cardio', 9.8], ['p_incline_walk', '跑步機上坡走', 'cardio', 5.5], ['p_walk', '快走', 'cardio', 4.3],
+    ['p_bike', '飛輪／單車', 'cardio', 7.0], ['p_swim', '游泳', 'cardio', 7.0],
+    ['p_rowerg', '划船機', 'cardio', 7.0], ['p_stair', '登階機', 'cardio', 9.0], ['p_jumprope', '跳繩', 'cardio', 11.0]
+  ].map(function (r) { return { id: r[0], name: r[1], group: r[2], met: r[3], mode: r[2] === 'cardio' ? 'cardio' : 'strength' }; });
+
+  function seed() {
+    return {
+      customExercises: [],
+      templates: [
+        { id: 'tpl_push', name: '推日', items: ['p_bench', 'p_incline', 'p_ohp', 'p_pushdown', 'p_latraise'] },
+        { id: 'tpl_pull', name: '拉日', items: ['p_pullup', 'p_bbrow', 'p_latpull', 'p_curl', 'p_facepull'] },
+        { id: 'tpl_legs', name: '腿日', items: ['p_squat', 'p_rdl', 'p_legpress', 'p_legcurl', 'p_calf'] }
+      ],
+      schedule: { 1: 'tpl_push', 2: null, 3: 'tpl_pull', 4: null, 5: 'tpl_legs', 6: null, 7: null },
+      sessions: [],
+      weights: [],
+      lastSet: {},
+      settings: { restPreset: 90, hiitWork: 30, hiitRest: 15, hiitRounds: 8 }
+    };
+  }
+
+  var state;
+  try {
+    state = JSON.parse(localStorage.getItem(LS_KEY) || 'null') || seed();
+  } catch (e) { state = seed(); }
+  if (!state.settings) state.settings = seed().settings;
+
+  function save() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  /* ───────────────────────── helpers ───────────────────────── */
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function fromYmd(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function todayYmd() { return ymd(new Date()); }
+  function isoDow(d) { var n = d.getDay(); return n === 0 ? 7 : n; }
+  var DOW_NAMES = { 1: '週一', 2: '週二', 3: '週三', 4: '週四', 5: '週五', 6: '週六', 7: '週日' };
+  function fmtMD(d) { return (d.getMonth() + 1) + '/' + d.getDate(); }
+  function fmtDateZh(d) { return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + DOW_NAMES[isoDow(d)]; }
+  function fmtInt(n) { return Math.round(n).toLocaleString('en-US'); }
+  function fmtKgCompact(n) {
+    if (n >= 100000) return (n / 1000).toFixed(0) + 'k';
+    if (n >= 10000) return (n / 1000).toFixed(1) + 'k';
+    return fmtInt(n);
+  }
+  function fmtDur(ms) {
+    var m = Math.round(ms / 60000);
+    if (m < 60) return m + ' 分鐘';
+    return Math.floor(m / 60) + ' 小時 ' + (m % 60) + ' 分';
+  }
+  function clampNum(v, min, max) {
+    var n = parseFloat(v);
+    if (isNaN(n)) return null;
+    return Math.min(max, Math.max(min, n));
+  }
+  function weekStart(d) {
+    var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    x.setDate(x.getDate() - (isoDow(x) - 1));
+    return x;
+  }
+
+  function allExercises() { return PRESETS.concat(state.customExercises); }
+  function exById(id) {
+    var list = allExercises();
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return null;
+  }
+  function groupById(id) {
+    for (var i = 0; i < GROUPS.length; i++) if (GROUPS[i].id === id) return GROUPS[i];
+    return GROUPS[5];
+  }
+  function tplById(id) {
+    for (var i = 0; i < state.templates.length; i++) if (state.templates[i].id === id) return state.templates[i];
+    return null;
+  }
+
+  function toast(msg) {
+    var t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove('show'); }, 2200);
+  }
+
+  /* two-tap destructive confirm */
+  function armConfirm(btn, label, fn) {
+    if (btn.dataset.armed === '1') { btn.dataset.armed = ''; fn(); return; }
+    btn.dataset.armed = '1';
+    var old = btn.innerHTML;
+    btn.innerHTML = esc(label || '再按一次確認');
+    btn.classList.add('confirming');
+    setTimeout(function () {
+      if (btn && btn.dataset.armed === '1') {
+        btn.dataset.armed = '';
+        btn.innerHTML = old;
+        btn.classList.remove('confirming');
+      }
+    }, 2600);
+  }
+
+  /* ───────────────────────── derived stats ───────────────────────── */
+
+  function setVolume(sets) {
+    var v = 0;
+    for (var i = 0; i < sets.length; i++) {
+      var s = sets[i];
+      if (s.done && s.w > 0 && s.r > 0) v += s.w * s.r;
+    }
+    return v;
+  }
+  function sessionVolume(sess) {
+    var v = 0;
+    (sess.entries || []).forEach(function (en) { if (en.mode === 'strength') v += setVolume(en.sets || []); });
+    return v;
+  }
+  function sessionDoneSets(sess) {
+    var c = 0;
+    (sess.entries || []).forEach(function (en) {
+      if (en.mode === 'strength') (en.sets || []).forEach(function (s) { if (s.done) c++; });
+    });
+    return c;
+  }
+  function bestWeight(exId) {
+    var best = 0;
+    state.sessions.forEach(function (sess) {
+      (sess.entries || []).forEach(function (en) {
+        if (en.exId !== exId) return;
+        (en.sets || []).forEach(function (s) { if (s.done && s.w > best) best = s.w; });
+      });
+    });
+    if (state.active) {
+      (state.active.entries || []).forEach(function (en) {
+        if (en.exId !== exId) return;
+        (en.sets || []).forEach(function (s) { if (s.done && s.w > best) best = s.w; });
+      });
+    }
+    return best;
+  }
+  function weekSessions(offsetWeeks) {
+    var ws = weekStart(new Date());
+    ws.setDate(ws.getDate() - 7 * (offsetWeeks || 0));
+    var we = new Date(ws); we.setDate(we.getDate() + 7);
+    var a = ymd(ws), b = ymd(we);
+    return state.sessions.filter(function (s) { return s.date >= a && s.date < b; });
+  }
+
+  /* ── 卡路里估算（MET × 體重 × 時間；走／跑有配速與坡度時用 ACSM 公式） ── */
+  function latestKg() {
+    return state.weights.length ? state.weights[state.weights.length - 1].kg : 70;
+  }
+  var WALK_IDS = { p_walk: 1, p_incline_walk: 1 };
+  function cardioKcal(en) {
+    var c = en.cardio || {};
+    var min = parseFloat(c.min) || 0;
+    if (!min) return 0;
+    var kg = latestKg();
+    var km = parseFloat(c.km) || 0;
+    var grade = Math.max(0, (parseFloat(c.inc) || 0)) / 100;
+    var ex = exById(en.exId);
+    var met = (ex && ex.met) || 7;
+    var isWalk = !!WALK_IDS[en.exId], isRun = en.exId === 'p_run';
+    if (km > 0 && (isWalk || isRun)) {
+      var v = km * 1000 / min; /* m/min */
+      var vo2 = (isRun && v > 134)
+        ? 3.5 + 0.2 * v + 0.9 * v * grade  /* ACSM 跑步公式 */
+        : 3.5 + 0.1 * v + 1.8 * v * grade; /* ACSM 走路公式 */
+      return vo2 * kg / 200 * min;
+    }
+    if ((isWalk || isRun) && grade > 0) met = (isWalk ? 3.8 : 9.8) + 45 * grade; /* 每 1% 坡約 +0.45 MET */
+    return met * kg / 60 * min;
+  }
+  function entryKcal(en) {
+    if (en.mode === 'cardio') {
+      return (en.cardio && en.cardio.done) ? cardioKcal(en) : 0;
+    }
+    var doneSets = 0;
+    (en.sets || []).forEach(function (s) { if (s.done) doneSets++; });
+    if (!doneSets) return 0;
+    var ex = exById(en.exId);
+    var met = (ex && ex.met) || 4.5;
+    return met * latestKg() * (70 / 3600) * doneSets; /* 每組以約 70 秒（含組間）估算 */
+  }
+  function sessionKcal(sess) {
+    var k = 0;
+    (sess.entries || []).forEach(function (en) { k += entryKcal(en); });
+    return Math.round(k);
+  }
+  function sessKcalOf(s) { return s.kcal != null ? s.kcal : sessionKcal(s); }
+
+  /* ───────────────────────── tabs & render ───────────────────────── */
+
+  var currentTab = 'today';
+  var view = $('#view');
+
+  function switchTab(tab) {
+    currentTab = tab;
+    $all('#tabbar .tab').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === tab); });
+    render();
+    window.scrollTo(0, 0);
+  }
+  $('#tabbar').addEventListener('click', function (e) {
+    var b = e.target.closest('.tab');
+    if (b) switchTab(b.dataset.tab);
+  });
+
+  function render() {
+    if (currentTab === 'today') renderToday();
+    else if (currentTab === 'plan') renderPlan();
+    else if (currentTab === 'timer') renderTimer();
+    else renderProgress();
+    updateMiniTimer();
+  }
+  function rerender() {
+    var st = window.scrollY;
+    render();
+    window.scrollTo(0, st);
+  }
+
+  $('#topDate').textContent = fmtDateZh(new Date());
+
+  /* ───────────────────────── TODAY ───────────────────────── */
+
+  function plannedTemplate() {
+    var id = state.schedule[isoDow(new Date())];
+    return id ? tplById(id) : null;
+  }
+
+  function renderToday() {
+    var html = '<div class="section" style="margin-top:10px">' +
+      '<span class="eyebrow">Today</span>' +
+      '<h1 class="h1">' + esc(fmtDateZh(new Date())) + '</h1>' +
+      '</div>';
+
+    if (state.active) {
+      html += activeSessionHtml();
+    } else {
+      var tpl = plannedTemplate();
+      html += '<div class="card hero section">' +
+        '<div class="plan-line">' +
+        (tpl
+          ? '<span class="chip accent">今日課表・' + esc(tpl.name) + '</span><span class="sub">' + tpl.items.length + ' 個動作</span>'
+          : '<span class="chip">今天沒有安排課表</span>') +
+        '</div>' +
+        (tpl ? '<button class="btn block" data-act="start-tpl">開始「' + esc(tpl.name) + '」</button>' : '') +
+        '<button class="btn block ' + (tpl ? 'ghost" style="margin-top:8px' : '') + '" data-act="start-blank">空白開始</button>' +
+        '</div>';
+
+      var wk = weekSessions(0);
+      var wkVol = 0, wkKcal = 0;
+      wk.forEach(function (s) { wkVol += s.volume || 0; wkKcal += sessKcalOf(s); });
+      html += '<div class="tiles section">' +
+        tile('本週訓練', String(wk.length), '次', null) +
+        tile('本週總量', fmtKgCompact(wkVol), 'kg', null) +
+        tile('本週消耗', '≈' + fmtKgCompact(wkKcal), 'kcal', null) +
+        '</div>';
+    }
+
+    /* recent history */
+    html += '<div class="section"><div class="section-head"><div><span class="eyebrow">Recent</span><h2>最近訓練</h2></div></div>';
+    if (!state.sessions.length) {
+      html += '<div class="card empty"><div class="big">還沒有訓練紀錄</div>完成第一次訓練後，會顯示在這裡</div>';
+    } else {
+      state.sessions.slice(0, 3).forEach(function (s) {
+        var d = fromYmd(s.date);
+        html += '<button class="list-item" data-act="open-session" data-id="' + s.id + '">' +
+          '<div class="grow"><div class="title">' + esc(s.name || '自主訓練') + '</div>' +
+          '<div class="meta num">' + fmtMD(d) + ' ' + DOW_NAMES[isoDow(d)] +
+          '・' + fmtInt(s.volume || 0) + ' kg・' + (s.setCount || 0) + ' 組' +
+          (s.cardioMin ? '・有氧 ' + s.cardioMin + ' 分' : '') +
+          '・≈' + sessKcalOf(s) + ' kcal</div></div>' +
+          chevSvg() + '</button>';
+      });
+      if (state.sessions.length > 3) {
+        html += '<button class="btn ghost small block" style="margin-top:10px" data-act="all-sessions">看全部（' + state.sessions.length + '）</button>';
+      }
+    }
+    html += '</div>';
+
+    view.innerHTML = html;
+    bindTodayEvents();
+  }
+
+  function tile(label, value, unit, deltaHtml) {
+    return '<div class="tile"><div class="t-label">' + esc(label) + '</div>' +
+      '<div class="t-value">' + esc(value) + (unit ? '<small>' + esc(unit) + '</small>' : '') + '</div>' +
+      (deltaHtml || '') + '</div>';
+  }
+  function chevSvg() {
+    return '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"></polyline></svg>';
+  }
+  function checkSvg() {
+    return '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7"></polyline></svg>';
+  }
+  function plusSvg() {
+    return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
+  }
+  function xSvg() {
+    return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>';
+  }
+
+  function fmtElapsed(ms) {
+    var m = Math.floor(ms / 60000), s = Math.floor(ms / 1000) % 60;
+    return (m >= 60 ? Math.floor(m / 60) + ':' + pad2(m % 60) : m) + ':' + pad2(s);
+  }
+
+  function activeSessionHtml() {
+    var a = state.active;
+    var vol = sessionVolume(a);
+    var sets = sessionDoneSets(a);
+    var kcal = sessionKcal(a);
+    var html = '<div class="card section" style="padding:16px 16px 14px">' +
+      '<div class="sess-bar">' +
+      '<div><div class="big num" id="sessElapsed">' + fmtElapsed(Date.now() - a.start) + '</div><div class="lbl">訓練時間</div></div>' +
+      '<div><div class="big num" id="sessVol">' + fmtKgCompact(vol) + '</div><div class="lbl">總量 kg</div></div>' +
+      '<div><div class="big num" id="sessSets">' + sets + '</div><div class="lbl">完成組數</div></div>' +
+      '<div><div class="big num" id="sessKcal">' + kcal + '</div><div class="lbl">≈ kcal</div></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:14px">' +
+      '<button class="btn block" data-act="finish">結束訓練</button>' +
+      '<button class="btn ghost" style="flex:none" data-act="abandon">放棄</button>' +
+      '</div>' +
+      '<div class="sub" style="font-size:11.5px;margin-top:10px">卡路里以 MET 係數 × 體重估算，僅供參考' +
+      (state.weights.length ? '' : '（尚未記錄體重，先以 70 kg 計）') + '</div>' +
+      '</div>';
+
+    a.entries.forEach(function (en, ei) {
+      html += exerciseCardHtml(en, ei);
+    });
+
+    html += '<button class="btn soft block" style="margin-top:10px" data-act="add-ex">' + plusSvg() + ' 加動作</button>';
+    return html;
+  }
+
+  function exerciseCardHtml(en, ei) {
+    var g = groupById(en.group);
+    var kc = Math.round(entryKcal(en));
+    var html = '<div class="card ex-card section" style="margin-top:10px" data-ei="' + ei + '">' +
+      '<div class="ex-head">' +
+      '<span class="gdot" style="background:' + g.dot + '"></span>' +
+      '<span class="name">' + esc(en.name) + '</span>' +
+      '<span class="exkcal num" id="exKcal-' + ei + '">' + (kc > 0 ? '≈' + kc + ' kcal' : '') + '</span>' +
+      '<button class="iconbtn" data-act="rm-ex" data-ei="' + ei + '" aria-label="移除動作">' + xSvg() + '</button>' +
+      '</div>';
+
+    if (en.mode === 'cardio') {
+      var c = en.cardio || {};
+      html += '<div class="cardio-row">' +
+        '<button class="check' + (c.done ? '' : '') + '" data-act="cardio-done" data-ei="' + ei + '" aria-label="完成" style="' + (c.done ? 'background:var(--good-soft);color:var(--good)' : '') + '">' + checkSvg() + '</button>' +
+        '<div class="unitwrap"><input type="number" inputmode="numeric" min="0" max="999" placeholder="0" value="' + (c.min || '') + '" data-bind="cardio-min" data-ei="' + ei + '" aria-label="分鐘"><span class="unit">分</span></div>' +
+        '<div class="unitwrap"><input type="number" inputmode="decimal" min="0" max="999" step="0.1" placeholder="—" value="' + (c.km || '') + '" data-bind="cardio-km" data-ei="' + ei + '" aria-label="公里"><span class="unit">km</span></div>' +
+        '<div class="unitwrap"><input type="number" inputmode="decimal" min="0" max="30" step="0.5" placeholder="0" value="' + (c.inc || '') + '" data-bind="cardio-inc" data-ei="' + ei + '" aria-label="坡度百分比"><span class="unit">%坡</span></div>' +
+        '</div>';
+    } else {
+      (en.sets || []).forEach(function (s, si) {
+        html += '<div class="setrow' + (s.done ? ' done' : '') + '">' +
+          '<button class="check" data-act="set-done" data-ei="' + ei + '" data-si="' + si + '" aria-label="完成這組">' + checkSvg() + '</button>' +
+          '<input type="number" inputmode="decimal" min="0" max="999" step="0.5" placeholder="kg" value="' + (s.w === 0 || s.w ? s.w : '') + '" data-bind="set-w" data-ei="' + ei + '" data-si="' + si + '" aria-label="重量">' +
+          '<span class="x">×</span>' +
+          '<input type="number" inputmode="numeric" min="0" max="999" placeholder="次" value="' + (s.r || '') + '" data-bind="set-r" data-ei="' + ei + '" data-si="' + si + '" aria-label="次數">' +
+          '<button class="rm" data-act="rm-set" data-ei="' + ei + '" data-si="' + si + '" aria-label="刪除這組">' + xSvg() + '</button>' +
+          '</div>' +
+          (s.pr ? '<div style="margin:4px 0 0 49px"><span class="prchip">PR 新紀錄</span></div>' : '');
+      });
+      html += '<div class="ex-actions">' +
+        '<button class="btn ghost small" data-act="add-set" data-ei="' + ei + '">' + plusSvg() + ' 加一組</button>' +
+        '<button class="btn soft small" data-act="quick-rest">休息 ' + state.settings.restPreset + '″</button>' +
+        '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  var elapsedTimer = null;
+  function startElapsedTick() {
+    clearInterval(elapsedTimer);
+    elapsedTimer = setInterval(function () {
+      if (!state.active || currentTab !== 'today') return;
+      var el = $('#sessElapsed');
+      if (!el) return;
+      el.textContent = fmtElapsed(Date.now() - state.active.start);
+    }, 1000);
+  }
+
+  function updateSessionStats() {
+    if (!state.active) return;
+    var v = $('#sessVol'), s = $('#sessSets'), k = $('#sessKcal');
+    if (v) v.textContent = fmtKgCompact(sessionVolume(state.active));
+    if (s) s.textContent = String(sessionDoneSets(state.active));
+    if (k) k.textContent = String(sessionKcal(state.active));
+    state.active.entries.forEach(function (en, ei) {
+      var el = $('#exKcal-' + ei);
+      if (!el) return;
+      var kc = Math.round(entryKcal(en));
+      el.textContent = kc > 0 ? '≈' + kc + ' kcal' : '';
+    });
+  }
+
+  function newEntryFor(ex) {
+    if (ex.mode === 'cardio') {
+      return { exId: ex.id, name: ex.name, group: ex.group, mode: 'cardio', cardio: { min: '', km: '', inc: '', done: false } };
+    }
+    var last = state.lastSet[ex.id];
+    return {
+      exId: ex.id, name: ex.name, group: ex.group, mode: 'strength',
+      sets: [{ w: last ? last.w : '', r: last ? last.r : '', done: false }]
+    };
+  }
+
+  function startSession(tpl) {
+    var entries = [];
+    if (tpl) {
+      tpl.items.forEach(function (id) {
+        var ex = exById(id);
+        if (ex) entries.push(newEntryFor(ex));
+      });
+    }
+    state.active = { start: Date.now(), name: tpl ? tpl.name : '自主訓練', entries: entries };
+    save();
+    rerender();
+    startElapsedTick();
+  }
+
+  function finishSession() {
+    var a = state.active;
+    var doneSets = sessionDoneSets(a);
+    var cardioMin = 0;
+    a.entries.forEach(function (en) {
+      if (en.mode === 'cardio' && en.cardio && en.cardio.done) cardioMin += (parseFloat(en.cardio.min) || 0);
+    });
+    if (!doneSets && !cardioMin) {
+      if (!window.confirm('還沒有完成任何一組，確定要結束嗎？（不會儲存）')) return;
+      state.active = null; save(); rerender(); return;
+    }
+    /* keep only entries with something done */
+    var entries = a.entries.map(function (en) {
+      if (en.mode === 'cardio') return (en.cardio && en.cardio.done && en.cardio.min) ? en : null;
+      var sets = (en.sets || []).filter(function (s) { return s.done; });
+      if (!sets.length) return null;
+      return { exId: en.exId, name: en.name, group: en.group, mode: 'strength', sets: sets };
+    }).filter(Boolean);
+
+    var sess = {
+      id: uid(), date: todayYmd(), start: a.start, end: Date.now(),
+      name: a.name, entries: entries,
+      volume: 0, setCount: doneSets, cardioMin: Math.round(cardioMin)
+    };
+    sess.volume = sessionVolume(sess);
+    entries.forEach(function (en) { en.kcal = Math.round(entryKcal(en)); });
+    sess.kcal = sessionKcal(sess);
+    state.sessions.unshift(sess);
+    state.active = null;
+    save();
+    rerender();
+    toast('訓練完成！總量 ' + fmtInt(sess.volume) + ' kg・≈' + sess.kcal + ' kcal・' + fmtDur(sess.end - sess.start));
+  }
+
+  function bindTodayEvents() {
+    if (state.active) startElapsedTick();
+
+    view.onclick = function (e) {
+      var b = e.target.closest('[data-act]');
+      if (!b) return;
+      var act = b.dataset.act;
+      var ei = +b.dataset.ei, si = +b.dataset.si;
+      var a = state.active;
+
+      if (act === 'start-tpl') { startSession(plannedTemplate()); }
+      else if (act === 'start-blank') { startSession(null); }
+      else if (act === 'finish') { finishSession(); }
+      else if (act === 'abandon') {
+        armConfirm(b, '確定放棄？', function () { state.active = null; save(); rerender(); toast('已放棄本次訓練'); });
+      }
+      else if (act === 'add-ex') { openPicker('session'); }
+      else if (act === 'rm-ex') {
+        armConfirm(b, '移除？', function () { a.entries.splice(ei, 1); save(); rerender(); });
+      }
+      else if (act === 'add-set') {
+        var en = a.entries[ei];
+        var prev = en.sets[en.sets.length - 1];
+        en.sets.push({ w: prev ? prev.w : '', r: prev ? prev.r : '', done: false });
+        save(); rerender();
+      }
+      else if (act === 'rm-set') {
+        a.entries[ei].sets.splice(si, 1);
+        save(); rerender();
+      }
+      else if (act === 'set-done') {
+        var s = a.entries[ei].sets[si];
+        s.w = parseFloat(s.w) || 0;
+        s.r = parseInt(s.r, 10) || 0;
+        if (!s.done) {
+          if (s.w > 0 && s.r > 0) {
+            state.lastSet[a.entries[ei].exId] = { w: s.w, r: s.r };
+            var prevBest = bestWeight(a.entries[ei].exId); /* this set not yet done, so it's excluded */
+            if (prevBest > 0 && s.w > prevBest) {
+              s.pr = true;
+              toast('新 PR！' + a.entries[ei].name + ' ' + s.w + ' kg');
+            }
+          }
+          s.done = true;
+        } else { s.done = false; s.pr = false; }
+        save(); rerender();
+      }
+      else if (act === 'cardio-done') {
+        var c = a.entries[ei].cardio;
+        c.done = !c.done;
+        save(); rerender();
+      }
+      else if (act === 'quick-rest') {
+        startRest(state.settings.restPreset);
+        toast('休息計時 ' + state.settings.restPreset + ' 秒開始');
+      }
+      else if (act === 'open-session') { openSessionSheet(b.dataset.id); }
+      else if (act === 'all-sessions') { openAllSessionsSheet(); }
+    };
+
+    view.oninput = function (e) {
+      var inp = e.target.closest('[data-bind]');
+      if (!inp || !state.active) return;
+      var bind = inp.dataset.bind;
+      var ei = +inp.dataset.ei, si = +inp.dataset.si;
+      var en = state.active.entries[ei];
+      if (!en) return;
+      if (bind === 'set-w') en.sets[si].w = clampNum(inp.value, 0, 999) != null ? clampNum(inp.value, 0, 999) : '';
+      else if (bind === 'set-r') en.sets[si].r = clampNum(inp.value, 0, 999) != null ? Math.round(clampNum(inp.value, 0, 999)) : '';
+      else if (bind === 'cardio-min') en.cardio.min = clampNum(inp.value, 0, 999) != null ? clampNum(inp.value, 0, 999) : '';
+      else if (bind === 'cardio-km') en.cardio.km = clampNum(inp.value, 0, 999) != null ? clampNum(inp.value, 0, 999) : '';
+      else if (bind === 'cardio-inc') en.cardio.inc = clampNum(inp.value, 0, 30) != null ? clampNum(inp.value, 0, 30) : '';
+      save();
+      updateSessionStats();
+    };
+  }
+
+  /* ───────────────────────── session sheets ───────────────────────── */
+
+  function sessionById(id) {
+    for (var i = 0; i < state.sessions.length; i++) if (state.sessions[i].id === id) return state.sessions[i];
+    return null;
+  }
+
+  function openSessionSheet(id) {
+    var s = sessionById(id);
+    if (!s) return;
+    var d = fromYmd(s.date);
+    var body = '<div class="sub num" style="margin-bottom:12px">' + fmtDateZh(d) + '・' + fmtDur((s.end - s.start) || 0) +
+      '・總量 ' + fmtInt(s.volume || 0) + ' kg・≈' + sessKcalOf(s) + ' kcal</div>';
+    (s.entries || []).forEach(function (en) {
+      var g = groupById(en.group);
+      var ekc = en.kcal != null ? en.kcal : Math.round(entryKcal(en));
+      body += '<div style="padding:10px 0;border-bottom:1px solid var(--line)">' +
+        '<div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px">' +
+        '<span class="gdot" style="background:' + g.dot + '"></span><span style="flex:1;min-width:0">' + esc(en.name) + '</span>' +
+        (ekc > 0 ? '<span class="exkcal num">≈' + ekc + ' kcal</span>' : '') + '</div>';
+      if (en.mode === 'cardio') {
+        body += '<div class="sub num" style="margin:4px 0 0 16px">' + (en.cardio.min || 0) + ' 分鐘' + (en.cardio.km ? '・' + en.cardio.km + ' km' : '') + (en.cardio.inc ? '・坡度 ' + en.cardio.inc + '%' : '') + '</div>';
+      } else {
+        var parts = (en.sets || []).map(function (x) {
+          return '<span class="num">' + (x.w || 0) + '×' + (x.r || 0) + (x.pr ? ' <span class="prchip">PR</span>' : '') + '</span>';
+        });
+        body += '<div class="sub" style="margin:4px 0 0 16px;display:flex;flex-wrap:wrap;gap:6px 14px">' + parts.join('') + '</div>';
+      }
+      body += '</div>';
+    });
+    body += '<button class="btn danger block" style="margin-top:16px" data-sheet-act="del-session" data-id="' + s.id + '">刪除這次紀錄</button>';
+    openSheet(esc(s.name || '訓練紀錄'), body, function (root) {
+      root.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-sheet-act="del-session"]');
+        if (!b) return;
+        armConfirm(b, '確定刪除？', function () {
+          state.sessions = state.sessions.filter(function (x) { return x.id !== b.dataset.id; });
+          save(); closeSheet(); rerender(); toast('已刪除');
+        });
+      });
+    });
+  }
+
+  function openAllSessionsSheet() {
+    var body = '';
+    state.sessions.forEach(function (s) {
+      var d = fromYmd(s.date);
+      body += '<button class="pick-item" data-sid="' + s.id + '">' +
+        '<div class="pname">' + esc(s.name || '自主訓練') +
+        '<div class="plast num" style="margin-top:2px">' + fmtMD(d) + ' ' + DOW_NAMES[isoDow(d)] + '・' + fmtInt(s.volume || 0) + ' kg・' + (s.setCount || 0) + ' 組・≈' + sessKcalOf(s) + ' kcal</div></div>' +
+        chevSvg() + '</button>';
+    });
+    openSheet('全部訓練紀錄', body, function (root) {
+      root.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-sid]');
+        if (b) { closeSheet(); setTimeout(function () { openSessionSheet(b.dataset.sid); }, 250); }
+      });
+    });
+  }
+
+  /* ───────────────────────── PLAN ───────────────────────── */
+
+  function renderPlan() {
+    var todayDow = isoDow(new Date());
+    var html = '<div class="section" style="margin-top:10px">' +
+      '<span class="eyebrow">Plan</span><h1 class="h1">課表安排</h1></div>';
+
+    html += '<div class="section"><div class="section-head"><div><span class="eyebrow">Weekly schedule</span><h2>每週安排</h2></div></div><div class="card">';
+    for (var d = 1; d <= 7; d++) {
+      var opts = '<option value="">休息</option>';
+      state.templates.forEach(function (t) {
+        opts += '<option value="' + t.id + '"' + (state.schedule[d] === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>';
+      });
+      html += '<div class="weekrow' + (d === todayDow ? ' today' : '') + '">' +
+        '<span class="d">' + DOW_NAMES[d] + '</span>' +
+        '<select class="select" data-day="' + d + '" aria-label="' + DOW_NAMES[d] + ' 課表">' + opts + '</select>' +
+        '</div>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="section"><div class="section-head"><div><span class="eyebrow">My templates</span><h2>我的課表</h2></div></div>';
+    if (!state.templates.length) {
+      html += '<div class="card empty"><div class="big">還沒有課表</div>建立課表後，可以指定到每週的訓練日</div>';
+    } else {
+      state.templates.forEach(function (t) {
+        var names = t.items.map(function (id) { var ex = exById(id); return ex ? ex.name : null; }).filter(Boolean);
+        html += '<button class="list-item" data-tpl="' + t.id + '">' +
+          '<div class="grow"><div class="title">' + esc(t.name) + '</div>' +
+          '<div class="meta">' + t.items.length + ' 個動作・' + esc(names.slice(0, 3).join('、')) + (names.length > 3 ? '…' : '') + '</div></div>' +
+          chevSvg() + '</button>';
+      });
+    }
+    html += '<button class="btn soft block" style="margin-top:10px" data-act="new-tpl">' + plusSvg() + ' 新增課表</button></div>';
+
+    view.innerHTML = html;
+
+    view.onclick = function (e) {
+      var t = e.target.closest('[data-tpl]');
+      if (t) { openTemplateSheet(t.dataset.tpl); return; }
+      var b = e.target.closest('[data-act="new-tpl"]');
+      if (b) {
+        var tpl = { id: 'tpl_' + uid(), name: '新課表', items: [] };
+        state.templates.push(tpl);
+        save();
+        openTemplateSheet(tpl.id);
+      }
+    };
+    view.onchange = function (e) {
+      var sel = e.target.closest('select[data-day]');
+      if (!sel) return;
+      state.schedule[sel.dataset.day] = sel.value || null;
+      save();
+      toast('已更新 ' + DOW_NAMES[+sel.dataset.day] + ' 安排');
+    };
+    view.oninput = null;
+  }
+
+  function openTemplateSheet(tplId) {
+    var t = tplById(tplId);
+    if (!t) return;
+
+    function bodyHtml() {
+      var body = '<label class="eyebrow" style="display:block;margin-bottom:6px">課表名稱</label>' +
+        '<input class="input" id="tplName" value="' + esc(t.name) + '" maxlength="20">' +
+        '<div class="section-head" style="margin-top:18px"><div><span class="eyebrow">Exercises</span><h2 style="font-size:15px">動作（' + t.items.length + '）</h2></div></div>';
+      if (!t.items.length) body += '<div class="empty" style="padding:14px">還沒有動作，按下方按鈕加入</div>';
+      t.items.forEach(function (id, idx) {
+        var ex = exById(id);
+        if (!ex) return;
+        var g = groupById(ex.group);
+        body += '<div class="pick-item"><span class="gdot" style="background:' + g.dot + '"></span>' +
+          '<span class="pname">' + esc(ex.name) + '</span>' +
+          '<button class="iconbtn" data-rm-item="' + idx + '" aria-label="移除">' + xSvg() + '</button></div>';
+      });
+      body += '<button class="btn soft block" style="margin-top:12px" data-tpl-add>' + plusSvg() + ' 加動作</button>' +
+        '<button class="btn danger block" style="margin-top:10px" data-tpl-del>刪除這份課表</button>';
+      return body;
+    }
+
+    openSheet('編輯課表', bodyHtml(), function (root) {
+      root.addEventListener('input', function (e) {
+        if (e.target.id === 'tplName') { t.name = e.target.value.trim() || '未命名課表'; save(); }
+      });
+      root.addEventListener('click', function (e) {
+        var rm = e.target.closest('[data-rm-item]');
+        if (rm) {
+          t.items.splice(+rm.dataset.rmItem, 1);
+          save();
+          $('.sheet-body', root).innerHTML = bodyHtml();
+          return;
+        }
+        if (e.target.closest('[data-tpl-add]')) {
+          closeSheet();
+          setTimeout(function () { openPicker('template', t.id); }, 250);
+          return;
+        }
+        var del = e.target.closest('[data-tpl-del]');
+        if (del) {
+          armConfirm(del, '確定刪除課表？', function () {
+            state.templates = state.templates.filter(function (x) { return x.id !== t.id; });
+            for (var d = 1; d <= 7; d++) if (state.schedule[d] === t.id) state.schedule[d] = null;
+            save(); closeSheet(); rerender(); toast('已刪除課表');
+          });
+        }
+      });
+    }, function onClose() { rerender(); });
+  }
+
+  /* ───────────────────────── PICKER ───────────────────────── */
+
+  var pickerState = { q: '', group: 'all' };
+
+  function openPicker(mode, tplId) {
+    pickerState = { q: '', group: 'all' };
+
+    function isAdded(exId) {
+      if (mode === 'session') {
+        return state.active && state.active.entries.some(function (en) { return en.exId === exId; });
+      }
+      var t = tplById(tplId);
+      return t && t.items.indexOf(exId) >= 0;
+    }
+
+    function listHtml() {
+      var q = pickerState.q.toLowerCase();
+      var list = allExercises().filter(function (ex) {
+        if (pickerState.group !== 'all' && ex.group !== pickerState.group) return false;
+        if (q && ex.name.toLowerCase().indexOf(q) < 0) return false;
+        return true;
+      });
+      if (!list.length) return '<div class="empty">找不到符合的動作</div>';
+      return list.map(function (ex) {
+        var g = groupById(ex.group);
+        var last = state.lastSet[ex.id];
+        var added = isAdded(ex.id);
+        return '<button class="pick-item' + (added ? ' added' : '') + '" data-pick="' + ex.id + '">' +
+          '<span class="gdot" style="background:' + g.dot + '"></span>' +
+          '<span class="pname">' + esc(ex.name) +
+          (last ? '<span class="plast num" style="display:block;margin-top:1px">上次 ' + last.w + ' kg × ' + last.r + '</span>' : '') +
+          '</span>' +
+          '<span class="plast">' + g.name + '</span>' +
+          '<span class="padd">' + (added ? checkSvg() : plusSvg()) + '</span>' +
+          '</button>';
+      }).join('');
+    }
+
+    var chips = '<button class="chip on" data-g="all">全部</button>' + GROUPS.map(function (g) {
+      return '<button class="chip" data-g="' + g.id + '">' + g.name + '</button>';
+    }).join('');
+
+    var body = '<div class="search"><input class="input" id="pickQ" placeholder="搜尋動作…" autocomplete="off"></div>' +
+      '<div class="groupchips">' + chips + '</div>' +
+      '<div id="pickList">' + listHtml() + '</div>' +
+      '<div style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">' +
+      '<button class="btn ghost small block" id="customToggle">' + plusSvg() + ' 自訂動作</button>' +
+      '<div id="customForm" hidden style="margin-top:10px">' +
+      '<input class="input" id="cName" placeholder="動作名稱" maxlength="20">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">' +
+      '<select class="select" id="cGroup">' + GROUPS.map(function (g) { return '<option value="' + g.id + '">' + g.name + '</option>'; }).join('') + '</select>' +
+      '<select class="select" id="cMode"><option value="strength">重量訓練</option><option value="cardio">有氧</option></select>' +
+      '</div>' +
+      '<button class="btn block small" style="margin-top:8px" id="cAdd">新增並加入</button>' +
+      '</div></div>';
+
+    openSheet(mode === 'session' ? '加動作' : '加動作到課表', body, function (root) {
+      var listEl = $('#pickList', root);
+
+      root.addEventListener('input', function (e) {
+        if (e.target.id === 'pickQ') { pickerState.q = e.target.value.trim(); listEl.innerHTML = listHtml(); }
+      });
+
+      root.addEventListener('click', function (e) {
+        var gchip = e.target.closest('[data-g]');
+        if (gchip) {
+          pickerState.group = gchip.dataset.g;
+          $all('[data-g]', root).forEach(function (c) { c.classList.toggle('on', c === gchip); });
+          listEl.innerHTML = listHtml();
+          return;
+        }
+        var pick = e.target.closest('[data-pick]');
+        if (pick) {
+          var ex = exById(pick.dataset.pick);
+          if (!ex) return;
+          if (isAdded(ex.id)) { toast('已在清單中'); return; }
+          if (mode === 'session') {
+            if (!state.active) return;
+            state.active.entries.push(newEntryFor(ex));
+          } else {
+            var t = tplById(tplId);
+            if (t) t.items.push(ex.id);
+          }
+          save();
+          pick.classList.add('added');
+          $('.padd', pick).innerHTML = checkSvg();
+          toast('已加入 ' + ex.name);
+          return;
+        }
+        if (e.target.closest('#customToggle')) {
+          var f = $('#customForm', root);
+          f.hidden = !f.hidden;
+          if (!f.hidden) $('#cName', root).focus();
+          return;
+        }
+        if (e.target.closest('#cAdd')) {
+          var name = $('#cName', root).value.trim();
+          if (!name) { toast('請輸入動作名稱'); return; }
+          var cMode = $('#cMode', root).value;
+          var ex2 = { id: 'c_' + uid(), name: name, group: $('#cGroup', root).value, mode: cMode, met: cMode === 'cardio' ? 7 : 4.5 };
+          state.customExercises.push(ex2);
+          if (mode === 'session' && state.active) state.active.entries.push(newEntryFor(ex2));
+          if (mode === 'template') { var t2 = tplById(tplId); if (t2) t2.items.push(ex2.id); }
+          save();
+          $('#cName', root).value = '';
+          listEl.innerHTML = listHtml();
+          toast('已新增並加入 ' + ex2.name);
+        }
+      });
+    }, function onClose() {
+      if (mode === 'template') { setTimeout(function () { openTemplateSheet(tplId); }, 200); }
+      else rerender();
+    });
+  }
+
+  /* ───────────────────────── TIMER ───────────────────────── */
+
+  var timer = loadTimer();
+  var timerTick = null;
+  var audioCtx = null;
+
+  function loadTimer() {
+    try {
+      var t = JSON.parse(localStorage.getItem(LS_TIMER) || 'null');
+      if (t && t.running && !t.paused && t.endsAt < Date.now()) return null; /* expired while away */
+      return t;
+    } catch (e) { return null; }
+  }
+  function saveTimer() {
+    try {
+      if (timer) localStorage.setItem(LS_TIMER, JSON.stringify(timer));
+      else localStorage.removeItem(LS_TIMER);
+    } catch (e) {}
+  }
+
+  function ensureAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (e) {}
+  }
+  function beep(times) {
+    if (!audioCtx) return;
+    var t0 = audioCtx.currentTime;
+    for (var i = 0; i < times; i++) {
+      var o = audioCtx.createOscillator();
+      var g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.0001, t0 + i * 0.28);
+      g.gain.exponentialRampToValueAtTime(0.35, t0 + i * 0.28 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + i * 0.28 + 0.2);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t0 + i * 0.28); o.stop(t0 + i * 0.28 + 0.24);
+    }
+    if (navigator.vibrate) navigator.vibrate([180, 90, 180, 90, 180]);
+  }
+
+  function startRest(secs) {
+    ensureAudio();
+    timer = { mode: 'rest', running: true, paused: false, total: secs, endsAt: Date.now() + secs * 1000, remain: secs * 1000 };
+    saveTimer();
+    runTick();
+  }
+  function startHiit(cfg) {
+    ensureAudio();
+    timer = {
+      mode: 'hiit', running: true, paused: false, phase: 'work', round: 1,
+      cfg: cfg, total: cfg.work, endsAt: Date.now() + cfg.work * 1000, remain: cfg.work * 1000
+    };
+    saveTimer();
+    runTick();
+  }
+  function pauseTimer() {
+    if (!timer || !timer.running) return;
+    if (!timer.paused) {
+      timer.paused = true;
+      timer.remain = Math.max(0, timer.endsAt - Date.now());
+    } else {
+      timer.paused = false;
+      timer.endsAt = Date.now() + timer.remain;
+      ensureAudio();
+    }
+    saveTimer();
+    updateTimerUI();
+  }
+  function stopTimer(silent) {
+    timer = null;
+    saveTimer();
+    clearInterval(timerTick); timerTick = null;
+    if (!silent) updateTimerUI();
+    updateMiniTimer();
+  }
+
+  function runTick() {
+    clearInterval(timerTick);
+    timerTick = setInterval(onTick, 200);
+    updateTimerUI();
+    updateMiniTimer();
+  }
+
+  function onTick() {
+    if (!timer || !timer.running || timer.paused) { updateTimerUI(); return; }
+    var remain = timer.endsAt - Date.now();
+    if (remain <= 0) {
+      if (timer.mode === 'rest') {
+        beep(3);
+        toast('休息結束，繼續下一組！');
+        stopTimer();
+        return;
+      }
+      /* hiit: advance phase */
+      var c = timer.cfg;
+      if (timer.phase === 'work') {
+        if (c.rest > 0 && timer.round < c.rounds) {
+          timer.phase = 'rest'; timer.total = c.rest; timer.endsAt = Date.now() + c.rest * 1000;
+          beep(1);
+        } else if (timer.round < c.rounds) {
+          timer.round++; timer.total = c.work; timer.endsAt = Date.now() + c.work * 1000;
+          beep(2);
+        } else {
+          beep(3); toast('間歇完成，做得好！'); stopTimer(); return;
+        }
+      } else {
+        timer.round++;
+        timer.phase = 'work'; timer.total = c.work; timer.endsAt = Date.now() + c.work * 1000;
+        beep(2);
+      }
+      saveTimer();
+    }
+    updateTimerUI();
+    updateMiniTimer();
+  }
+
+  function timerRemainMs() {
+    if (!timer) return 0;
+    return timer.paused ? timer.remain : Math.max(0, timer.endsAt - Date.now());
+  }
+  function fmtClock(ms) {
+    var s = Math.ceil(ms / 1000);
+    return Math.floor(s / 60) + ':' + pad2(s % 60);
+  }
+
+  var timerView = { mode: 'rest' }; /* which segment the timer tab shows */
+
+  function renderTimer() {
+    if (timer && timer.running) timerView.mode = timer.mode;
+    var st = state.settings;
+    var isRest = timerView.mode === 'rest';
+
+    var html = '<div class="section" style="margin-top:10px">' +
+      '<span class="eyebrow">Timer</span><h1 class="h1">計時器</h1></div>' +
+      '<div class="section"><div class="seg">' +
+      '<button class="' + (isRest ? 'on' : '') + '" data-seg="rest">組間休息</button>' +
+      '<button class="' + (!isRest ? 'on' : '') + '" data-seg="hiit">HIIT 間歇</button>' +
+      '</div></div>';
+
+    html += '<div class="card section" style="padding:18px 16px 20px">';
+    html += ringHtml();
+
+    if (isRest) {
+      html += '<div class="preset-row">' +
+        [30, 60, 90, 120, 180].map(function (s) {
+          return '<button class="chip' + (st.restPreset === s ? ' on' : '') + '" data-preset="' + s + '">' + (s < 60 ? s + '″' : Math.floor(s / 60) + '′' + (s % 60 ? pad2(s % 60) + '″' : '')) + '</button>';
+        }).join('') + '</div>';
+      html += '<div class="timer-ctl">' +
+        '<button class="btn ghost" data-tact="minus" aria-label="減 15 秒">−15″</button>' +
+        '<button class="btn" data-tact="startpause" id="startBtn">開始</button>' +
+        '<button class="btn ghost" data-tact="plus" aria-label="加 15 秒">＋15″</button>' +
+        '</div>' +
+        '<button class="btn ghost small block" style="margin-top:10px" data-tact="reset">重設</button>';
+    } else {
+      html += '<div class="hiit-cfg">' +
+        '<div><label>運動（秒）</label><input type="number" inputmode="numeric" min="5" max="600" id="hWork" value="' + st.hiitWork + '"></div>' +
+        '<div><label>休息（秒）</label><input type="number" inputmode="numeric" min="0" max="600" id="hRest" value="' + st.hiitRest + '"></div>' +
+        '<div><label>回合</label><input type="number" inputmode="numeric" min="1" max="50" id="hRounds" value="' + st.hiitRounds + '"></div>' +
+        '</div>' +
+        '<div class="timer-ctl" style="grid-template-columns:1fr 2fr 1fr">' +
+        '<span></span>' +
+        '<button class="btn" data-tact="startpause" id="startBtn">開始</button>' +
+        '<span></span>' +
+        '</div>' +
+        '<button class="btn ghost small block" style="margin-top:10px" data-tact="reset">重設</button>';
+    }
+    html += '</div>';
+
+    view.innerHTML = html;
+    updateTimerUI();
+
+    view.onclick = function (e) {
+      var seg = e.target.closest('[data-seg]');
+      if (seg) {
+        if (timer && timer.running && timer.mode !== seg.dataset.seg) {
+          toast('先停止目前的計時');
+          return;
+        }
+        timerView.mode = seg.dataset.seg;
+        renderTimer();
+        return;
+      }
+      var pre = e.target.closest('[data-preset]');
+      if (pre) {
+        state.settings.restPreset = +pre.dataset.preset;
+        save();
+        if (!(timer && timer.running)) renderTimer();
+        else { $all('[data-preset]', view).forEach(function (c) { c.classList.toggle('on', c === pre); }); updateTimerUI(); }
+        return;
+      }
+      var b = e.target.closest('[data-tact]');
+      if (!b) return;
+      var act = b.dataset.tact;
+
+      if (act === 'startpause') {
+        if (timer && timer.running) { pauseTimer(); return; }
+        if (timerView.mode === 'rest') startRest(state.settings.restPreset);
+        else {
+          var w = clampNum($('#hWork').value, 5, 600) || 30;
+          var r = clampNum($('#hRest').value, 0, 600); if (r == null) r = 15;
+          var n = clampNum($('#hRounds').value, 1, 50) || 8;
+          state.settings.hiitWork = Math.round(w); state.settings.hiitRest = Math.round(r); state.settings.hiitRounds = Math.round(n);
+          save();
+          startHiit({ work: Math.round(w), rest: Math.round(r), rounds: Math.round(n) });
+        }
+      }
+      else if (act === 'reset') { stopTimer(); }
+      else if (act === 'minus' || act === 'plus') {
+        var dv = act === 'plus' ? 15 : -15;
+        if (timer && timer.running && timer.mode === 'rest') {
+          if (timer.paused) timer.remain = Math.max(1000, timer.remain + dv * 1000);
+          else timer.endsAt = Math.max(Date.now() + 1000, timer.endsAt + dv * 1000);
+          timer.total = Math.max(timer.total + dv, Math.ceil(timerRemainMs() / 1000));
+          saveTimer(); updateTimerUI();
+        } else {
+          state.settings.restPreset = Math.max(15, Math.min(600, state.settings.restPreset + dv));
+          save(); renderTimer();
+        }
+      }
+    };
+    view.onchange = null;
+    view.oninput = null;
+  }
+
+  var RING_R = 84, RING_C = 2 * Math.PI * 84;
+
+  function ringHtml() {
+    return '<div class="ring-wrap">' +
+      '<svg viewBox="0 0 200 200" aria-hidden="true">' +
+      '<circle cx="100" cy="100" r="' + RING_R + '" fill="none" stroke="var(--surface2)" stroke-width="14"></circle>' +
+      '<circle id="ringArc" cx="100" cy="100" r="' + RING_R + '" fill="none" stroke="var(--accent)" stroke-width="14" stroke-linecap="round"' +
+      ' stroke-dasharray="' + RING_C + '" stroke-dashoffset="0" transform="rotate(-90 100 100)"></circle>' +
+      '<circle cx="100" cy="100" r="58" fill="none" stroke="var(--line)" stroke-width="1"></circle>' +
+      '</svg>' +
+      '<div class="ring-center">' +
+      '<div class="ring-digits num" id="ringDigits">0:00</div>' +
+      '<div class="ring-sub" id="ringSub"></div>' +
+      '</div></div>';
+  }
+
+  function updateTimerUI() {
+    if (currentTab !== 'timer') return;
+    var digits = $('#ringDigits'), sub = $('#ringSub'), arc = $('#ringArc'), btn = $('#startBtn');
+    if (!digits) return;
+
+    var running = timer && timer.running;
+    var showMode = timerView.mode;
+
+    if (running && timer.mode === showMode) {
+      var remain = timerRemainMs();
+      digits.textContent = fmtClock(remain);
+      var frac = timer.total > 0 ? remain / (timer.total * 1000) : 0;
+      arc.style.strokeDashoffset = String(RING_C * (1 - Math.max(0, Math.min(1, frac))));
+      arc.style.stroke = (timer.mode === 'hiit' && timer.phase === 'rest') ? 'var(--good)' : 'var(--accent)';
+      if (timer.mode === 'hiit') sub.textContent = (timer.phase === 'work' ? '運動' : '休息') + '・回合 ' + timer.round + '/' + timer.cfg.rounds;
+      else sub.textContent = timer.paused ? '已暫停' : '休息中';
+      if (btn) btn.textContent = timer.paused ? '繼續' : '暫停';
+    } else {
+      var s = showMode === 'rest' ? state.settings.restPreset : state.settings.hiitWork;
+      digits.textContent = fmtClock(s * 1000);
+      arc.style.strokeDashoffset = '0';
+      arc.style.stroke = 'var(--accent)';
+      sub.textContent = showMode === 'rest' ? '組間休息' : '共 ' + state.settings.hiitRounds + ' 回合';
+      if (btn) btn.textContent = '開始';
+    }
+  }
+
+  function updateMiniTimer() {
+    var mt = $('#miniTimer');
+    var appEl = $('#app');
+    var show = timer && timer.running && currentTab !== 'timer';
+    mt.classList.toggle('show', !!show);
+    appEl.classList.toggle('has-mini', !!show);
+    if (!show) { mt.innerHTML = ''; delete mt.dataset.built; return; }
+    if (!mt.dataset.built) {
+      mt.innerHTML = '<span class="mt-digits num" id="mtDigits"></span>' +
+        '<span class="mt-label" id="mtLabel"></span>' +
+        '<span class="grow"></span>' +
+        '<button data-mt="pause" id="mtPause"></button>' +
+        '<button data-mt="open">打開</button>' +
+        '<button data-mt="stop" aria-label="停止">✕</button>';
+      mt.dataset.built = '1';
+    }
+    var label = timer.mode === 'rest' ? '組間休息' : ((timer.phase === 'work' ? '運動' : '休息') + ' ' + timer.round + '/' + timer.cfg.rounds);
+    $('#mtDigits').textContent = fmtClock(timerRemainMs());
+    $('#mtLabel').textContent = label + (timer.paused ? '・已暫停' : '');
+    $('#mtPause').textContent = timer.paused ? '繼續' : '暫停';
+  }
+  $('#miniTimer').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-mt]');
+    if (!b) return;
+    if (b.dataset.mt === 'pause') { pauseTimer(); updateMiniTimer(); }
+    else if (b.dataset.mt === 'open') switchTab('timer');
+    else stopTimer();
+  });
+
+  /* keep ticking even when tab hidden state resumed */
+  if (timer && timer.running) runTick();
+
+  /* ───────────────────────── PROGRESS ───────────────────────── */
+
+  function renderProgress() {
+    var html = '<div class="section" style="margin-top:10px">' +
+      '<span class="eyebrow">Progress</span><h1 class="h1">進度追蹤</h1></div>';
+
+    /* tiles */
+    var latest = state.weights.length ? state.weights[state.weights.length - 1] : null;
+    var wk = weekSessions(0);
+    var wkVol = 0; wk.forEach(function (s) { wkVol += s.volume || 0; });
+
+    var deltaHtml = '';
+    if (state.weights.length >= 2) {
+      var first = state.weights[0];
+      var dv = latest.kg - first.kg;
+      var cls = Math.abs(dv) < 0.05 ? 'flat' : (dv < 0 ? 'down' : 'up');
+      deltaHtml = '<div class="t-delta ' + cls + ' num">' + (dv > 0 ? '+' : '') + dv.toFixed(1) + ' kg 自 ' + fmtMD(fromYmd(first.date)) + '</div>';
+    }
+    html += '<div class="tiles section">' +
+      tile('目前體重', latest ? latest.kg.toFixed(1) : '—', latest ? 'kg' : '', deltaHtml) +
+      tile('本週訓練', String(wk.length), '次', null) +
+      tile('本週總量', fmtKgCompact(wkVol), 'kg', null) +
+      '</div>';
+
+    /* body weight */
+    html += '<div class="section"><div class="section-head"><div><span class="eyebrow">Body weight</span><h2>體重</h2></div></div>' +
+      '<div class="card">' +
+      '<div style="display:flex;gap:8px">' +
+      '<input class="input num" id="wInput" type="number" inputmode="decimal" step="0.1" min="20" max="300" placeholder="今天體重（kg）">' +
+      '<button class="btn" style="flex:none" data-act="add-weight">記錄</button>' +
+      '</div>' +
+      weightChartHtml() +
+      weightListHtml() +
+      '</div></div>';
+
+    /* volume */
+    html += '<div class="section"><div class="section-head"><div><span class="eyebrow">Training volume</span><h2>每週訓練量</h2></div></div>' +
+      '<div class="card">' + volumeChartHtml() + '</div></div>';
+
+    /* PRs */
+    var prs = computePRs();
+    html += '<div class="section"><div class="section-head"><div><span class="eyebrow">Records</span><h2>個人紀錄</h2></div></div>';
+    if (!prs.length) {
+      html += '<div class="card empty"><div class="big">還沒有紀錄</div>完成訓練後，最重的一組會列在這裡</div>';
+    } else {
+      html += '<div class="card" style="padding:6px 16px">';
+      prs.slice(0, 6).forEach(function (p) {
+        var g = groupById(p.group);
+        html += '<div class="wlist-row"><span class="gdot" style="background:' + g.dot + '"></span>' +
+          '<span class="d">' + esc(p.name) + '</span>' +
+          '<span class="v num">' + p.w + ' kg × ' + p.r + '</span></div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+
+    /* backup */
+    html += '<div class="section"><div class="section-head"><div><span class="eyebrow">Backup</span><h2>資料備份</h2></div></div>' +
+      '<div class="card"><div class="sub" style="margin-bottom:10px">資料儲存在這支手機的瀏覽器裡。建議偶爾匯出備份，換手機時可匯入還原。</div>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button class="btn ghost small block" data-act="export">匯出</button>' +
+      '<button class="btn ghost small block" data-act="import">匯入</button>' +
+      '</div></div></div>';
+
+    view.innerHTML = html;
+    bindChartTips();
+
+    view.onclick = function (e) {
+      var b = e.target.closest('[data-act]');
+      if (b) {
+        var act = b.dataset.act;
+        if (act === 'add-weight') {
+          var v = clampNum($('#wInput').value, 20, 300);
+          if (v == null) { toast('請輸入體重'); return; }
+          v = Math.round(v * 10) / 10;
+          var t = todayYmd();
+          var existing = state.weights.filter(function (w) { return w.date === t; })[0];
+          if (existing) existing.kg = v;
+          else { state.weights.push({ date: t, kg: v }); state.weights.sort(function (a, b2) { return a.date < b2.date ? -1 : 1; }); }
+          save(); rerender(); toast('已記錄 ' + v.toFixed(1) + ' kg');
+          return;
+        }
+        if (act === 'del-weight') {
+          state.weights = state.weights.filter(function (w) { return w.date !== b.dataset.date; });
+          save(); rerender();
+          return;
+        }
+        if (act === 'export') { openExportSheet(); return; }
+        if (act === 'import') { openImportSheet(); return; }
+      }
+      handleChartTap(e);
+    };
+    view.onchange = null;
+    view.oninput = null;
+  }
+
+  function computePRs() {
+    var best = {};
+    state.sessions.forEach(function (sess) {
+      (sess.entries || []).forEach(function (en) {
+        if (en.mode !== 'strength') return;
+        (en.sets || []).forEach(function (s) {
+          if (!s.done || !(s.w > 0)) return;
+          if (!best[en.exId] || s.w > best[en.exId].w) {
+            best[en.exId] = { name: en.name, group: en.group, w: s.w, r: s.r, date: sess.date };
+          }
+        });
+      });
+    });
+    return Object.keys(best).map(function (k) { return best[k]; })
+      .sort(function (a, b) { return b.w - a.w; });
+  }
+
+  /* ── charts ── */
+
+  function niceTicks(min, max, count) {
+    var span = max - min || 1;
+    var step = Math.pow(10, Math.floor(Math.log(span / count) / Math.LN10));
+    var err = span / count / step;
+    if (err >= 7.5) step *= 10;
+    else if (err >= 3.5) step *= 5;
+    else if (err >= 1.5) step *= 2;
+    var ticks = [];
+    var t = Math.ceil(min / step) * step;
+    while (t <= max + 1e-9) { ticks.push(+t.toFixed(6)); t += step; }
+    return ticks;
+  }
+
+  function weightChartHtml() {
+    var cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 90);
+    var pts = state.weights.filter(function (w) { return w.date >= ymd(cutoff); });
+    if (pts.length < 2) {
+      return '<div class="empty" style="padding:22px 10px 12px">' +
+        (state.weights.length ? '再多記錄幾天，就會畫出趨勢線' : '記錄第一筆體重，開始追蹤趨勢') + '</div>';
+    }
+    var W = 460, H = 190, padL = 38, padR = 42, padT = 16, padB = 26;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var t0 = fromYmd(pts[0].date).getTime(), t1 = fromYmd(pts[pts.length - 1].date).getTime();
+    if (t1 === t0) t1 = t0 + 86400000;
+    var vals = pts.map(function (p) { return p.kg; });
+    var vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals);
+    var padV = Math.max(0.4, (vmax - vmin) * 0.18);
+    vmin -= padV; vmax += padV;
+    var X = function (t) { return padL + (t - t0) / (t1 - t0) * iw; };
+    var Y = function (v) { return padT + (1 - (v - vmin) / (vmax - vmin)) * ih; };
+
+    var ticks = niceTicks(vmin, vmax, 3);
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" id="wChart">';
+    ticks.forEach(function (tk) {
+      var y = Y(tk);
+      svg += '<line class="grid-l" x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y + '"></line>' +
+        '<text class="axis-t" x="' + (padL - 6) + '" y="' + (y + 3.5) + '" text-anchor="end">' + tk + '</text>';
+    });
+
+    var lineP = '', areaP = '';
+    pts.forEach(function (p, i) {
+      var x = X(fromYmd(p.date).getTime()), y = Y(p.kg);
+      lineP += (i ? ' L' : 'M') + x.toFixed(1) + ',' + y.toFixed(1);
+    });
+    areaP = lineP + ' L' + X(t1).toFixed(1) + ',' + (padT + ih) + ' L' + X(t0).toFixed(1) + ',' + (padT + ih) + ' Z';
+
+    svg += '<path d="' + areaP + '" fill="var(--chart)" opacity="0.1"></path>';
+    svg += '<path d="' + lineP + '" fill="none" stroke="var(--chart)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>';
+
+    /* x labels: first / mid / last */
+    [0, Math.floor((pts.length - 1) / 2), pts.length - 1].forEach(function (i, k) {
+      if (pts.length < 3 && k === 1) return;
+      var p = pts[i];
+      var x = X(fromYmd(p.date).getTime());
+      var anchor = k === 0 ? 'start' : (k === 2 ? 'end' : 'middle');
+      svg += '<text class="axis-t" x="' + x + '" y="' + (H - 8) + '" text-anchor="' + anchor + '">' + fmtMD(fromYmd(p.date)) + '</text>';
+    });
+
+    /* endpoint */
+    var lx = X(t1), ly = Y(pts[pts.length - 1].kg);
+    svg += '<circle cx="' + lx + '" cy="' + ly + '" r="6.5" fill="var(--surface)"></circle>' +
+      '<circle cx="' + lx + '" cy="' + ly + '" r="4.5" fill="var(--chart)"></circle>' +
+      '<text class="axis-t" x="' + (lx + 4) + '" y="' + (ly - 9) + '" text-anchor="end" style="font-weight:800;fill:var(--ink);font-size:11.5px">' + pts[pts.length - 1].kg.toFixed(1) + '</text>';
+
+    /* hit targets */
+    pts.forEach(function (p, i) {
+      var x = X(fromYmd(p.date).getTime()), y = Y(p.kg);
+      svg += '<circle cx="' + x + '" cy="' + y + '" r="14" fill="transparent" data-wtip="' + i + '" data-x="' + x.toFixed(1) + '" data-y="' + y.toFixed(1) + '" data-label="' + p.kg.toFixed(1) + ' kg" data-sub="' + fmtMD(fromYmd(p.date)) + '"></circle>';
+    });
+
+    svg += '</svg>';
+    return '<div class="chart" data-vieww="' + W + '">' + svg + '<div class="tip" id="wTip"></div></div>';
+  }
+
+  function weightListHtml() {
+    if (!state.weights.length) return '';
+    var rows = state.weights.slice(-5).reverse().map(function (w) {
+      return '<div class="wlist-row"><span class="d num">' + fmtMD(fromYmd(w.date)) + ' ' + DOW_NAMES[isoDow(fromYmd(w.date))] + '</span>' +
+        '<span class="v num">' + w.kg.toFixed(1) + ' kg</span>' +
+        '<button class="iconbtn" style="width:30px;height:30px" data-act="del-weight" data-date="' + w.date + '" aria-label="刪除">' + xSvg() + '</button></div>';
+    }).join('');
+    return '<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:4px">' + rows + '</div>';
+  }
+
+  function volumeChartHtml() {
+    var weeks = [];
+    var anyData = false;
+    for (var i = 7; i >= 0; i--) {
+      var ws = weekStart(new Date());
+      ws.setDate(ws.getDate() - 7 * i);
+      var we = new Date(ws); we.setDate(we.getDate() + 7);
+      var a = ymd(ws), b = ymd(we);
+      var vol = 0, cnt = 0;
+      state.sessions.forEach(function (s) {
+        if (s.date >= a && s.date < b) { vol += s.volume || 0; cnt++; }
+      });
+      if (vol > 0 || cnt > 0) anyData = true;
+      weeks.push({ start: ws, vol: vol, cnt: cnt, current: i === 0 });
+    }
+    if (!anyData) {
+      return '<div class="empty" style="padding:22px 10px 12px">完成訓練後，這裡會顯示每週總量長條圖</div>';
+    }
+
+    var W = 460, H = 190, padL = 40, padR = 12, padT = 18, padB = 26;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var vmax = Math.max.apply(null, weeks.map(function (w) { return w.vol; }));
+    if (vmax <= 0) vmax = 1;
+    var ticks = niceTicks(0, vmax * 1.08, 3).filter(function (t) { return t > 0; });
+    var topTick = ticks.length ? ticks[ticks.length - 1] : vmax;
+    var vTop = Math.max(vmax * 1.08, topTick);
+    var Y = function (v) { return padT + (1 - v / vTop) * ih; };
+    var slot = iw / 8;
+    var bw = Math.min(24, slot - 8);
+
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" id="vChart">';
+    ticks.forEach(function (tk) {
+      var y = Y(tk);
+      svg += '<line class="grid-l" x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y + '"></line>' +
+        '<text class="axis-t" x="' + (padL - 6) + '" y="' + (y + 3.5) + '" text-anchor="end">' + fmtKgCompact(tk) + '</text>';
+    });
+    /* baseline */
+    svg += '<line x1="' + padL + '" y1="' + (padT + ih) + '" x2="' + (W - padR) + '" y2="' + (padT + ih) + '" stroke="var(--line)" stroke-width="1"></line>';
+
+    weeks.forEach(function (w, i) {
+      var cx = padL + slot * i + slot / 2;
+      var x = cx - bw / 2;
+      var y = Y(w.vol), hgt = padT + ih - y;
+      var col = w.current ? 'var(--chart)' : 'var(--chart-dim)';
+      if (w.vol > 0 && hgt >= 1) {
+        var r = Math.min(4, hgt);
+        svg += '<path d="M' + x + ',' + (padT + ih) + ' L' + x + ',' + (y + r) +
+          ' Q' + x + ',' + y + ' ' + (x + r) + ',' + y +
+          ' L' + (x + bw - r) + ',' + y +
+          ' Q' + (x + bw) + ',' + y + ' ' + (x + bw) + ',' + (y + r) +
+          ' L' + (x + bw) + ',' + (padT + ih) + ' Z" fill="' + col + '"></path>';
+      }
+      if (w.current && w.vol > 0) {
+        svg += '<text class="axis-t" x="' + cx + '" y="' + (y - 5) + '" text-anchor="middle" style="font-weight:800;fill:var(--ink);font-size:11.5px">' + fmtKgCompact(w.vol) + '</text>';
+      }
+      svg += '<text class="axis-t" x="' + cx + '" y="' + (H - 8) + '" text-anchor="middle"' + (w.current ? ' style="font-weight:800;fill:var(--muted)"' : '') + '>' + fmtMD(w.start) + '</text>';
+      svg += '<rect x="' + (padL + slot * i) + '" y="' + padT + '" width="' + slot + '" height="' + ih + '" fill="transparent" data-vtip="' + i + '" data-x="' + cx.toFixed(1) + '" data-y="' + (w.vol > 0 ? y.toFixed(1) : (padT + ih - 8)) + '" data-label="' + fmtInt(w.vol) + ' kg" data-sub="' + fmtMD(w.start) + ' 那週・' + w.cnt + ' 次訓練"></rect>';
+    });
+
+    svg += '</svg>';
+    return '<div class="chart" data-vieww="' + W + '">' + svg + '<div class="tip" id="vTip"></div></div>';
+  }
+
+  function bindChartTips() { /* handled via delegated handleChartTap */ }
+
+  function handleChartTap(e) {
+    var hit = e.target.closest('[data-wtip],[data-vtip]');
+    $all('.tip', view).forEach(function (t) { t.style.display = 'none'; });
+    if (!hit) return;
+    var chart = hit.closest('.chart');
+    var tip = $('.tip', chart);
+    var svg = $('svg', chart);
+    var vw = +chart.dataset.vieww;
+    var scale = svg.getBoundingClientRect().width / vw;
+    tip.innerHTML = esc(hit.dataset.label) + '<small>' + esc(hit.dataset.sub) + '</small>';
+    tip.style.left = (+hit.dataset.x * scale) + 'px';
+    tip.style.top = (+hit.dataset.y * scale) + 'px';
+    tip.style.display = 'block';
+    clearTimeout(handleChartTap._t);
+    handleChartTap._t = setTimeout(function () { tip.style.display = 'none'; }, 2600);
+  }
+
+  /* ── backup ── */
+
+  function openExportSheet() {
+    var json = JSON.stringify(state);
+    var body = '<div class="sub" style="margin-bottom:10px">複製下面整段文字，貼到記事本或傳給自己保存。</div>' +
+      '<textarea class="io" readonly id="ioTa">' + esc(json) + '</textarea>' +
+      '<button class="btn block" style="margin-top:10px" id="copyBtn">複製全部</button>';
+    openSheet('匯出備份', body, function (root) {
+      $('#copyBtn', root).addEventListener('click', function () {
+        var ta = $('#ioTa', root);
+        ta.select(); ta.setSelectionRange(0, 999999);
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        if (navigator.clipboard) { navigator.clipboard.writeText(ta.value).catch(function () {}); ok = true; }
+        toast(ok ? '已複製到剪貼簿' : '請長按文字手動複製');
+      });
+    });
+  }
+
+  function openImportSheet() {
+    var body = '<div class="sub" style="margin-bottom:10px">貼上之前匯出的備份文字。匯入會覆蓋目前所有資料。</div>' +
+      '<textarea class="io" id="ioTa" placeholder="貼上備份 JSON…"></textarea>' +
+      '<button class="btn block" style="margin-top:10px" id="impBtn">匯入並覆蓋</button>';
+    openSheet('匯入備份', body, function (root) {
+      var impBtn = $('#impBtn', root);
+      impBtn.addEventListener('click', function () {
+        var raw = $('#ioTa', root).value.trim();
+        if (!raw) { toast('請先貼上備份內容'); return; }
+        var data;
+        try { data = JSON.parse(raw); } catch (e) { toast('格式不正確，無法匯入'); return; }
+        if (!data || !Array.isArray(data.sessions) || !Array.isArray(data.templates)) { toast('這不是鐵日誌的備份檔'); return; }
+        armConfirm(impBtn, '確定覆蓋目前資料？', function () {
+          state = data;
+          if (!state.settings) state.settings = seed().settings;
+          if (!state.lastSet) state.lastSet = {};
+          if (!state.customExercises) state.customExercises = [];
+          if (!state.weights) state.weights = [];
+          if (!state.schedule) state.schedule = seed().schedule;
+          save(); closeSheet(); rerender(); toast('匯入完成');
+        });
+      });
+    });
+  }
+
+  /* ───────────────────────── sheet plumbing ───────────────────────── */
+
+  var sheetOnClose = null;
+
+  function openSheet(title, bodyHtml, bind, onClose) {
+    var old = $('#sheet'), overlay = $('#overlay');
+    sheetOnClose = onClose || null;
+    /* clone strips any listeners a previous sheet attached */
+    var sheet = old.cloneNode(false);
+    old.parentNode.replaceChild(sheet, old);
+    sheet.classList.remove('show');
+    sheet.innerHTML = '<div class="grabber"></div>' +
+      '<div class="sheet-head"><h3>' + title + '</h3>' +
+      '<button class="iconbtn" data-close aria-label="關閉">' + xSvg() + '</button></div>' +
+      '<div class="sheet-body">' + bodyHtml + '</div>';
+    sheet.hidden = false; overlay.hidden = false;
+    requestAnimationFrame(function () {
+      sheet.classList.add('show'); overlay.classList.add('show');
+    });
+    sheet.addEventListener('click', function (e) {
+      if (e.target.closest('[data-close]')) closeSheet();
+    });
+    if (bind) bind(sheet);
+    overlay.onclick = closeSheet;
+  }
+
+  function closeSheet() {
+    var sheet = $('#sheet'), overlay = $('#overlay');
+    sheet.classList.remove('show'); overlay.classList.remove('show');
+    setTimeout(function () {
+      sheet.hidden = true; overlay.hidden = true; sheet.innerHTML = '';
+      if (sheetOnClose) { var f = sheetOnClose; sheetOnClose = null; f(); }
+    }, 240);
+  }
+
+  /* ───────────────────────── boot ───────────────────────── */
+
+  render();
+})();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js'); });
+}
+</script>
+</body>
+</html>
