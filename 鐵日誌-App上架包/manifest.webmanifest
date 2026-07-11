@@ -1,0 +1,13 @@
+{
+  "name": "鐵日誌 IRONLOG",
+  "short_name": "鐵日誌",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0C0F14",
+  "theme_color": "#2952E3",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
