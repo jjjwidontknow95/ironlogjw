@@ -128,6 +128,7 @@
   .topbar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 18px 2px 6px;
+    padding-top: calc(18px + env(safe-area-inset-top, 0px));
   }
   .wordmark { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .18em; color: var(--ink); }
   .wordmark .plate { width: 10px; height: 10px; border-radius: 3px; background: var(--accent); display: inline-block; }
