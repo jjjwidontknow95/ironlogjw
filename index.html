@@ -349,6 +349,9 @@
   .pick-item:last-child { border-bottom: 0; }
   .pick-item .pname { font-weight: 700; font-size: 15px; flex: 1; min-width: 0; }
   .pick-item .plast { font-size: 12px; color: var(--faint); }
+  .pick-item .pen { display: block; font-size: 11.5px; color: var(--accent); font-weight: 700; margin-top: 1px; letter-spacing: .01em; }
+  .pick-sec { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); padding: 15px 2px 5px; }
+  .pick-sec:first-child { padding-top: 4px; }
   .pick-item .padd { width: 32px; height: 32px; border-radius: 9px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; flex: none; }
   .pick-item.added .padd { background: var(--good-soft); color: var(--good); }
 
@@ -475,20 +478,40 @@
   /* [id, name, group, MET] — MET 用於卡路里估算（Compendium 近似值） */
   var PRESETS = [
     ['p_bench', '槓鈴臥推', 'chest', 6.0], ['p_dbbench', '啞鈴臥推', 'chest', 6.0], ['p_incline', '上斜臥推', 'chest', 6.0],
-    ['p_fly', '蝴蝶機夾胸', 'chest', 4.5], ['p_dip', '雙槓撐體', 'chest', 6.0], ['p_pushup', '伏地挺身', 'chest', 4.5],
-    ['p_pullup', '引體向上', 'back', 6.0], ['p_latpull', '滑輪下拉', 'back', 6.0], ['p_bbrow', '槓鈴划船', 'back', 6.0],
-    ['p_dbrow', '啞鈴划船', 'back', 6.0], ['p_seatrow', '坐姿划船', 'back', 6.0], ['p_deadlift', '硬舉', 'back', 6.0],
-    ['p_squat', '深蹲', 'legs', 6.0], ['p_legpress', '腿推機', 'legs', 6.0], ['p_lunge', '弓步蹲', 'legs', 6.0],
-    ['p_rdl', '羅馬尼亞硬舉', 'legs', 6.0], ['p_legext', '腿伸屈', 'legs', 4.5], ['p_legcurl', '腿彎舉', 'legs', 4.5], ['p_calf', '小腿提踵', 'legs', 4.5],
-    ['p_ohp', '肩上推舉', 'shoulders', 6.0], ['p_latraise', '啞鈴側平舉', 'shoulders', 4.5], ['p_facepull', '面拉', 'shoulders', 4.5],
+    ['p_chestpress', '胸推機', 'chest', 5.0],
+    ['p_fly', '蝴蝶機夾胸', 'chest', 4.5], ['p_cablefly', '纜繩飛鳥', 'chest', 4.5],
+    ['p_dip', '雙槓撐體', 'chest', 6.0], ['p_pushup', '伏地挺身', 'chest', 4.5],
+    ['p_pullup', '引體向上', 'back', 6.0], ['p_assistpull', '輔助引體向上機', 'back', 4.5], ['p_latpull', '滑輪下拉', 'back', 6.0],
+    ['p_bbrow', '槓鈴划船', 'back', 6.0], ['p_dbrow', '啞鈴划船', 'back', 6.0], ['p_seatrow', '坐姿划船', 'back', 6.0],
+    ['p_deadlift', '硬舉', 'back', 6.0], ['p_backext', '背部伸展（羅馬椅）', 'back', 4.0],
+    ['p_squat', '深蹲', 'legs', 6.0], ['p_smithsquat', '史密斯深蹲', 'legs', 5.5], ['p_hacksquat', '哈克深蹲機', 'legs', 6.0], ['p_legpress', '腿推機', 'legs', 6.0],
+    ['p_hipthrust', '臀推', 'legs', 5.5], ['p_lunge', '弓步蹲', 'legs', 6.0],
+    ['p_rdl', '羅馬尼亞硬舉', 'legs', 6.0], ['p_legext', '腿伸屈', 'legs', 4.5], ['p_legcurl', '腿彎舉', 'legs', 4.5],
+    ['p_abduction', '腿外展機', 'legs', 4.0], ['p_adduction', '腿內收機', 'legs', 4.0], ['p_calf', '小腿提踵', 'legs', 4.5],
+    ['p_ohp', '肩上推舉', 'shoulders', 6.0], ['p_shoulderpressm', '肩推機', 'shoulders', 5.0],
+    ['p_latraise', '側平舉', 'shoulders', 4.5], ['p_facepull', '面拉', 'shoulders', 4.5],
     ['p_frontraise', '前平舉', 'shoulders', 4.5], ['p_reversefly', '反向飛鳥', 'shoulders', 4.5],
-    ['p_curl', '二頭彎舉', 'arms', 4.5], ['p_hammer', '錘式彎舉', 'arms', 4.5], ['p_pushdown', '三頭下壓', 'arms', 4.5],
+    ['p_curl', '二頭彎舉', 'arms', 4.5], ['p_hammer', '錘式彎舉', 'arms', 4.5],
+    ['p_pushdown', '三頭下壓', 'arms', 4.5], ['p_dipmachine', '三頭撐體機', 'arms', 5.0],
     ['p_ohext', '過頭三頭伸展', 'arms', 4.5], ['p_closegrip', '窄握臥推', 'arms', 6.0],
-    ['p_plank', '平板支撐', 'core', 3.8], ['p_crunch', '捲腹', 'core', 3.8], ['p_legraise', '懸垂舉腿', 'core', 3.8], ['p_russian', '俄羅斯轉體', 'core', 3.8],
+    ['p_plank', '平板支撐', 'core', 3.8], ['p_crunch', '捲腹', 'core', 3.8], ['p_abmachine', '捲腹機', 'core', 4.0],
+    ['p_legraise', '懸垂舉腿', 'core', 3.8], ['p_russian', '俄羅斯轉體', 'core', 3.8],
     ['p_run', '跑步', 'cardio', 9.8], ['p_incline_walk', '跑步機上坡走', 'cardio', 5.5], ['p_walk', '快走', 'cardio', 4.3],
     ['p_bike', '飛輪／單車', 'cardio', 7.0], ['p_swim', '游泳', 'cardio', 7.0],
     ['p_rowerg', '划船機', 'cardio', 7.0], ['p_stair', '登階機', 'cardio', 9.0], ['p_jumprope', '跳繩', 'cardio', 11.0]
   ].map(function (r) { return { id: r[0], name: r[1], group: r[2], met: r[3], mode: r[2] === 'cardio' ? 'cardio' : 'strength' }; });
+
+  /* 器材貼紙上的英文名（在健身房好對照）。key = 動作 id */
+  var EN_LABEL = {
+    p_chestpress: 'Chest Press', p_incline: 'MTS Incline Press', p_latpull: 'Lat Pulldown',
+    p_latraise: 'Lateral Raise', p_pushdown: 'MTS Triceps Ext', p_curl: 'MTS Biceps Curl',
+    p_legext: 'Leg Extension', p_crunch: 'MTS Ab Crunch'
+  };
+  PRESETS.forEach(function (p) { if (EN_LABEL[p.id]) p.en = EN_LABEL[p.id]; });
+
+  /* Jw 健身房常用的 Hammer Strength 器材，置頂顯示。順序：胸→背→肩→手→腿→核心。
+     'HIGHROW' 是佔位符，執行時對應到使用者自建的「MTS HIGH ROW」（保留其歷史紀錄）。 */
+  var FAV_TOKENS = ['p_chestpress', 'p_incline', 'p_latpull', 'HIGHROW', 'p_latraise', 'p_pushdown', 'p_curl', 'p_legext', 'p_crunch'];
 
   function seed() {
     return {
@@ -511,6 +534,18 @@
     state = JSON.parse(localStorage.getItem(LS_KEY) || 'null') || seed();
   } catch (e) { state = seed(); }
   if (!state.settings) state.settings = seed().settings;
+
+  /* 一次性升級：補上 3 份器材課表。動作選用使用者原本就在記錄的通用 id，
+     這樣過去紀錄與「自動帶入上次重量」都能延續（High Row 是自建動作，讓使用者自行加入）。 */
+  if (!state.seedMachines) {
+    state.seedMachines = true;
+    state.templates.push(
+      { id: 'tpl_m_push', name: '器材推日', items: ['p_chestpress', 'p_incline', 'p_latraise', 'p_pushdown', 'p_crunch'] },
+      { id: 'tpl_m_pull', name: '器材拉日', items: ['p_latpull', 'p_seatrow', 'p_curl'] },
+      { id: 'tpl_m_legs', name: '器材腿日', items: ['p_legpress', 'p_legext', 'p_legcurl', 'p_hipthrust', 'p_calf'] }
+    );
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+  }
 
   function save() {
     try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
@@ -569,6 +604,25 @@
   function tplById(id) {
     for (var i = 0; i < state.templates.length; i++) if (state.templates[i].id === id) return state.templates[i];
     return null;
+  }
+  /* 常用器材清單：把 FAV_TOKENS 解析成動作物件；HIGHROW 對應使用者自建的高位划船 */
+  function customHighRow() {
+    var list = state.customExercises || [];
+    for (var i = 0; i < list.length; i++) if (/high\s*row/i.test(list[i].name)) return list[i];
+    return null;
+  }
+  function favExerciseList() {
+    var out = [];
+    FAV_TOKENS.forEach(function (tok) {
+      if (tok === 'HIGHROW') {
+        var hr = customHighRow();
+        if (hr) { if (!hr.en) hr.en = 'MTS High Row'; out.push(hr); }
+      } else {
+        var ex = exById(tok);
+        if (ex) out.push(ex);
+      }
+    });
+    return out;
   }
 
   function toast(msg) {
@@ -1211,27 +1265,40 @@
       return t && t.items.indexOf(exId) >= 0;
     }
 
+    function pickItemHtml(ex) {
+      var g = groupById(ex.group);
+      var last = state.lastSet[ex.id];
+      var added = isAdded(ex.id);
+      return '<button class="pick-item' + (added ? ' added' : '') + '" data-pick="' + ex.id + '">' +
+        '<span class="gdot" style="background:' + g.dot + '"></span>' +
+        '<span class="pname">' + esc(ex.name) +
+        (ex.en ? '<span class="pen">' + esc(ex.en) + '</span>' : '') +
+        (last ? '<span class="plast num" style="display:block;margin-top:1px">上次 ' + last.w + ' kg × ' + last.r + '</span>' : '') +
+        '</span>' +
+        '<span class="plast">' + g.name + '</span>' +
+        '<span class="padd">' + (added ? checkSvg() : plusSvg()) + '</span>' +
+        '</button>';
+    }
+
     function listHtml() {
       var q = pickerState.q.toLowerCase();
+      var showFav = !q && pickerState.group === 'all';
+      var favs = showFav ? favExerciseList() : [];
+      var favIds = {};
+      favs.forEach(function (e) { favIds[e.id] = 1; });
       var list = allExercises().filter(function (ex) {
+        if (favIds[ex.id]) return false;
         if (pickerState.group !== 'all' && ex.group !== pickerState.group) return false;
-        if (q && ex.name.toLowerCase().indexOf(q) < 0) return false;
+        if (q && ex.name.toLowerCase().indexOf(q) < 0 && !(ex.en && ex.en.toLowerCase().indexOf(q) >= 0)) return false;
         return true;
       });
-      if (!list.length) return '<div class="empty">找不到符合的動作</div>';
-      return list.map(function (ex) {
-        var g = groupById(ex.group);
-        var last = state.lastSet[ex.id];
-        var added = isAdded(ex.id);
-        return '<button class="pick-item' + (added ? ' added' : '') + '" data-pick="' + ex.id + '">' +
-          '<span class="gdot" style="background:' + g.dot + '"></span>' +
-          '<span class="pname">' + esc(ex.name) +
-          (last ? '<span class="plast num" style="display:block;margin-top:1px">上次 ' + last.w + ' kg × ' + last.r + '</span>' : '') +
-          '</span>' +
-          '<span class="plast">' + g.name + '</span>' +
-          '<span class="padd">' + (added ? checkSvg() : plusSvg()) + '</span>' +
-          '</button>';
-      }).join('');
+      if (!favs.length && !list.length) return '<div class="empty">找不到符合的動作</div>';
+      var html = '';
+      if (favs.length) {
+        html += '<div class="pick-sec">常用器材</div>' + favs.map(pickItemHtml).join('') +
+          '<div class="pick-sec">全部動作</div>';
+      }
+      return html + list.map(pickItemHtml).join('');
     }
 
     var chips = '<button class="chip on" data-g="all">全部</button>' + GROUPS.map(function (g) {
